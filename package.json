@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-intensive",
+  "version": "1.0.0",
+  "description": "Типотека",
+  "main": "./src/service/service.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VitalyIonov/468109-typoteka-3.git"
+  },
+  "author": "Ионов Виталий",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VitalyIonov/468109-typoteka-3/issues"
+  },
+  "homepage": "https://github.com/VitalyIonov/468109-typoteka-3#readme",
+  "scripts": {
+    "test": "npm run eslint",
+    "eslint": "eslint --ext .js src/",
+    "start": "node ./src/service/service.js"
+  },
+  "devDependencies": {
+    "eslint": "7.18.0",
+    "eslint-config-htmlacademy": "0.6.0"
+  }
+}
