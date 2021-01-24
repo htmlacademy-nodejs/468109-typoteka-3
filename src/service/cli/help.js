@@ -1,15 +1,18 @@
 'use strict';
 
+const chalk = require(`chalk`);
+
 const runShowHelpInfo = () => {
-  console.info(`Программа запускает http-сервер и формирует файл с данными для API.`);
-  console.info(``);
-  console.info(`    Гайд:`);
-  console.info(`    service.js <command>`);
-  console.info(``);
-  console.info(`    Команды:`);
-  console.info(`    --version:            выводит номер версии`);
-  console.info(`    --help:               выводит информацию о доступных командах`);
-  console.info(`    --generate <count>    формирует файл mocks.json`);
+  console.info(chalk.gray(`
+    Программа запускает http-сервер и формирует файл с данными для API.
+    
+      Гайд:
+      service.js <command>
+      Команды:
+      --version:            выводит номер версии
+      --help:               выводит список команд
+      --generate <count>    формирует файл mocks.json
+  `));
 };
 
 module.exports = {
