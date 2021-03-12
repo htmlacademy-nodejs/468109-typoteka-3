@@ -33,9 +33,20 @@ const readContent = async (filePath) => {
   }
 };
 
+const checkTextMatch = (search, text) => {
+  if (!search || !text) {
+    return false;
+  }
+
+  const reg = new RegExp(search.trim(), `gi`);
+
+  return reg.test(text);
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
   getRandomDate,
-  readContent
+  readContent,
+  checkTextMatch
 };
