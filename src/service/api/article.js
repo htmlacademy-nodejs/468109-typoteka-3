@@ -8,9 +8,9 @@ const entityValidator = require(`../middlewares/entityValidator`);
 const articleExists = require(`../middlewares/articleExists`);
 const commentExists = require(`../middlewares/commentExists`);
 
-const route = new Router();
-
 module.exports = (app, service) => {
+  const route = new Router();
+
   app.use(`/article`, route);
 
   route.get(

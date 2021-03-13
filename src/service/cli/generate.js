@@ -49,10 +49,12 @@ const generatePublications = (count, titles, sentences, categories, comments) =>
 };
 
 const runGenerateData = async (args) => {
-  const sentences = await readContent(FILE_SENTENCES_PATH);
-  const titles = await readContent(FILE_TITLES_PATH);
-  const categories = await readContent(FILE_CATEGORIES_PATH);
-  const comments = await readContent(FILE_COMMENTS_PATH);
+  const [sentences, titles, categories, comments] = await Promise.all([
+    readContent(FILE_SENTENCES_PATH),
+    readContent(FILE_TITLES_PATH),
+    readContent(FILE_CATEGORIES_PATH),
+    readContent(FILE_COMMENTS_PATH)
+  ]);
   const [count] = args;
   const countData = Number.parseInt(count, 10) || DEFAULT_COUNT;
 

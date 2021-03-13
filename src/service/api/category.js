@@ -3,9 +3,9 @@
 const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
 
-const route = new Router();
-
 module.exports = (app, service) => {
+  const route = new Router();
+
   app.use(`/category`, route);
 
   route.get(

@@ -1,16 +1,16 @@
 'use strict';
 
-const fs = require(`fs`).promises;
+const fs = require(`fs`);
 const FILENAME = `mocks.json`;
 let data = null;
 
-const getMockData = async () => {
-  if (data !== null) {
-    return Promise.resolve(data);
+const getMockData = () => {
+  if (data) {
+    return data;
   }
 
   try {
-    const fileContent = await fs.readFile(FILENAME);
+    const fileContent = fs.readFileSync(FILENAME);
 
     if (fileContent.length === 0) {
       data = [];
@@ -18,10 +18,10 @@ const getMockData = async () => {
 
     data = JSON.parse(fileContent);
   } catch (err) {
-    return Promise.reject(err);
+    throw err;
   }
 
-  return Promise.resolve(data);
+  return data;
 };
 
 module.exports = {

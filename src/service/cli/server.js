@@ -3,7 +3,7 @@
 const express = require(`express`);
 const {StatusCodes, ReasonPhrases} = require(`http-status-codes`);
 
-const apiRoutes = require(`../api`);
+const getApiRoutes = require(`../api`);
 
 const DEFAULT_PORT = 3000;
 const API_PREFIX = `/api`;
@@ -15,7 +15,7 @@ const runServer = (args) => {
 
   app.use(express.json());
 
-  app.use(API_PREFIX, apiRoutes);
+  app.use(API_PREFIX, getApiRoutes());
 
   app.use((req, res) => res
     .status(StatusCodes.NOT_FOUND)
