@@ -2,9 +2,23 @@
 
 const {StatusCodes, ReasonPhrases} = require(`http-status-codes`);
 
+const getNewEntity = (entity, body) => {
+  const bodyKeys = Object.keys(body);
+
+  if (bodyKeys.length > 0) {
+    return body;
+  }
+
+  if (entity) {
+    return entity;
+  }
+
+  return {};
+};
+
 module.exports = (entityKeys, entityName) => (req, res, next) => {
   const entity = res.locals[entityName];
-  const newEntity = entity ? Object.assign(entity, req.body) : req.body;
+  const newEntity = getNewEntity(entity, req.body);
   const keys = Object.keys(newEntity);
   const keysExists = entityKeys.every((key) => keys.includes(key));
 
