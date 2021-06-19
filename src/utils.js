@@ -43,10 +43,27 @@ const checkTextMatch = (search, text) => {
   return reg.test(text);
 };
 
+const getUniqueEntitiesArray = (data, field) => {
+  if (!data || !data.length) {
+    return [];
+  }
+
+  return data.reduce((result, item) => {
+    const entities = item[field];
+
+    if (!entities) {
+      return result;
+    }
+
+    return [...new Set([...result, ...entities])];
+  }, []);
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
   getRandomDate,
   readContent,
-  checkTextMatch
+  checkTextMatch,
+  getUniqueEntitiesArray
 };
