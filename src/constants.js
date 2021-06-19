@@ -10,6 +10,11 @@ module.exports.ExitCode = {
 
 module.exports.MAX_ID_LENGTH = 6;
 
+module.exports.Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
+};
+
 module.exports.SystemError = {
   NOT_FOUND: `ENOENT`
 };
