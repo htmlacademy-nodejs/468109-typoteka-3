@@ -2,6 +2,7 @@
 
 const express = require(`express`);
 const path = require(`path`);
+const bodyParser = require(`body-parser`);
 
 const mainRoutes = require(`./routes/main-routes`);
 const registerRoutes = require(`./routes/register-routes`);
@@ -16,6 +17,7 @@ const PUBLIC_DIR = `public`;
 
 const app = express();
 
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 
 app.set(`views`, path.resolve(__dirname, `templates`));
