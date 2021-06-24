@@ -19,7 +19,6 @@ articlesRouter.post(`/add`, async (req, res) => {
   const articleData = {
     createdDate: body.date,
     title: body.title,
-    category: Array.isArray(body.category) ? body.category : [body.category],
     announce: body.announcement,
     fullText: body[`full-text`],
   };
@@ -44,7 +43,6 @@ articlesRouter.post(`/edit/:id`, async (req, res) => {
   const articleData = {
     createdDate: body.date,
     title: body.title,
-    category: Array.isArray(body.category) ? body.category : [body.category],
     announce: body.announcement,
     fullText: body[`full-text`],
   };

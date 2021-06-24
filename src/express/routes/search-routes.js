@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const chalk = require(`chalk`);
 
 const {getAPI} = require(`../api`);
 
@@ -16,6 +17,8 @@ searchRouter.get(`/`, async (req, res) => {
       results
     });
   } catch (error) {
+    console.error(chalk.red(`Can't find anything`));
+
     res.render(`search`, {
       results: []
     });
