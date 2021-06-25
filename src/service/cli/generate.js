@@ -40,7 +40,7 @@ const generatePublications = (count, titles, sentences, categories, comments) =>
   return Array(count).fill({}).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
     title: titles[getRandomInt(0, titles.length - 1)],
-    createdDate: getRandomDate(MIN_DATE, MAX_DATE),
+    createdDate: new Date(getRandomDate(MIN_DATE, MAX_DATE)),
     announce: shuffle(sentences).slice(0, getRandomInt(1, 5)).join(` `),
     fullText: shuffle(sentences).slice(0, getRandomInt(1, sentences.length)).join(` `),
     category: [...shuffle(categories).slice(0, getRandomInt(1, categories.length))],

@@ -2,9 +2,24 @@
 
 const {Router} = require(`express`);
 
-const myRouter = new Router();
+const {getAPI} = require(`../api`);
+const {getExtendedEntitiesArray} = require(`../../utils`);
 
-myRouter.get(`/`, (req, res) => res.render(`my`));
-myRouter.get(`/comments`, (req, res) => res.render(`comments`));
+const myRouter = new Router();
+const api = getAPI();
+
+myRouter.get(`/`, async (req, res) => {
+  const articles = await api.getArticles();
+
+  res.render(`my`, {articles});
+});
+myRouter.get(`/comments`, async (req, res) => {
+  const articles = await api.getArticles();
+  const preparedArticles = articles.slice(0, 3);
+
+  const comments = getExtendedEntitiesArray(preparedArticles, `comments`, [`announce`, `createdDate`]);
+
+  res.render(`comments`, {comments});
+});
 
 module.exports = myRouter;

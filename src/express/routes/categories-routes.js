@@ -2,8 +2,15 @@
 
 const {Router} = require(`express`);
 
-const categoriesRouter = new Router();
+const {getAPI} = require(`../api`);
 
-categoriesRouter.get(`/`, (req, res) => res.render(`all-categories`));
+const categoriesRouter = new Router();
+const api = getAPI();
+
+categoriesRouter.get(`/`, async (req, res) => {
+  const categories = await api.getCategories();
+
+  res.render(`all-categories`, {categories});
+});
 
 module.exports = categoriesRouter;

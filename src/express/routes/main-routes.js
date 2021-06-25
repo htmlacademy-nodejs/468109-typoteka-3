@@ -2,8 +2,18 @@
 
 const {Router} = require(`express`);
 
-const mainRouter = new Router();
+const {getAPI} = require(`../api`);
 
-mainRouter.get(`/`, (req, res) => res.render(`main`));
+const mainRouter = new Router();
+const api = getAPI();
+
+mainRouter.get(`/`, async (req, res) => {
+  const [articles, categories] = await Promise.all([
+    api.getArticles(),
+    api.getCategories()
+  ]);
+
+  res.render(`main`, {articles, categories});
+});
 
 module.exports = mainRouter;

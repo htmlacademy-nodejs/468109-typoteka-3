@@ -59,11 +59,47 @@ const getUniqueEntitiesArray = (data, field) => {
   }, []);
 };
 
+const extendEntity = (entity, data, extensions) => {
+  const additionalData = {};
+
+  extensions.forEach((extension) => {
+    if (data[extension]) {
+      additionalData[extension] = data[extension];
+    }
+  });
+
+  return {
+    ...entity,
+    ...additionalData
+  };
+};
+
+const getExtendedEntitiesArray = (data, field, extensions = []) => {
+  if (!data || !data.length) {
+    return [];
+  }
+
+  return data.reduce((result, item) => {
+    const entities = item[field];
+
+    if (!entities) {
+      return result;
+    }
+
+    const extendedEntities = entities.map((entity) => {
+      return extendEntity(entity, item, extensions);
+    });
+
+    return [...result, ...extendedEntities];
+  }, []);
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
   getRandomDate,
   readContent,
   checkTextMatch,
-  getUniqueEntitiesArray
+  getUniqueEntitiesArray,
+  getExtendedEntitiesArray
 };

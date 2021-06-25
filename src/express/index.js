@@ -16,6 +16,7 @@ const PUBLIC_DIR = `public`;
 
 const app = express();
 
+app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 
 app.set(`views`, path.resolve(__dirname, `templates`));
