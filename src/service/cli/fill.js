@@ -52,12 +52,12 @@ const generateComments = (count, articleId, userCount, comments) => {
 const generatePublications = (count, titles, categoryCount, userCount, sentences, comments) => {
   return Array(count).fill({}).map((_, index) => ({
     title: titles[getRandomInt(0, titles.length - 1)],
-    publicationDate: new Date(getRandomDate(MIN_DATE, MAX_DATE)),
+    publicationDate: new Date(getRandomDate(MIN_DATE, MAX_DATE)).toUTCString(),
     userId: getRandomInt(1, userCount),
-    announce: shuffle(sentences).slice(0, getRandomInt(1, 5)).join(` `),
-    fullText: shuffle(sentences).slice(0, getRandomInt(1, sentences.length)).join(` `),
+    announce: shuffle(sentences).slice(0, getRandomInt(1, 3)).join(` `).substr(0, 249),
+    fullText: shuffle(sentences).slice(0, getRandomInt(1, sentences.length)).join(` `).substr(0, 1000),
     category: [getRandomInt(1, categoryCount)],
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS), index + 1, userCount, comments)
+    comments: generateComments(getRandomInt(2, MAX_COMMENTS), index + 1, userCount, comments)
   }));
 };
 
