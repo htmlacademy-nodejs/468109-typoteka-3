@@ -17,12 +17,12 @@
     "test": "npm run eslint && npm run jest",
     "jest": "jest",
     "eslint": "eslint --ext .js src/",
-    "start": "cross-env NODE_ENV=production node ./src/service/service.js",
-    "start::debug": "cross-env NODE_ENV=development node ./src/service/service.js",
-    "generate--5": "cross-env NODE_ENV=development node ./src/service/service.js --generate 5",
+    "start": "cross-env NODE_ENV=production node -r dotenv/config ./src/service/service.js",
+    "start::debug": "cross-env NODE_ENV=development node -r dotenv/config ./src/service/service.js",
+    "generate--5": "cross-env NODE_ENV=development node -r dotenv/config ./src/service/service.js --generate 5",
     "fill--3": "cross-env NODE_ENV=development node ./src/service/service.js --fill 5",
-    "server": "cross-env NODE_ENV=production nodemon ./src/service/service.js --server 3000",
-    "server::debug": "cross-env NODE_ENV=development nodemon ./src/service/service.js --server 3000",
+    "server": "cross-env NODE_ENV=production nodemon -r dotenv/config ./src/service/service.js --server 3000",
+    "server::debug": "cross-env NODE_ENV=development nodemon -r dotenv/config ./src/service/service.js --server 3000",
     "start-front-server": "nodemon ./src/express/index.js"
   },
   "devDependencies": {
@@ -37,10 +37,13 @@
     "axios": "0.21.1",
     "chalk": "4.1.0",
     "cross-env": "7.0.3",
+    "dotenv": "10.0.0",
     "express": "4.17.1",
     "http-status-codes": "2.1.4",
     "nanoid": "3.1.21",
+    "pg": "8.6.0",
     "pino": "6.11.3",
-    "pug": "3.0.0"
+    "pug": "3.0.0",
+    "sequelize": "6.6.4"
   }
 }
