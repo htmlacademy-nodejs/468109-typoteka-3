@@ -7,7 +7,17 @@ const {getAPI} = require(`../api`);
 const articlesRouter = new Router();
 const api = getAPI();
 
-articlesRouter.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
+articlesRouter.get(`/category/:id`, async (req, res) => {
+  const {id} = req.params;
+
+  const [articles, categories, category] = await Promise.all([
+    api.getArticles(true),
+    api.getCategories(true),
+    api.getCategory(id)
+  ]);
+
+  return res.render(`articles-by-category`, {articles, categories, category});
+});
 
 articlesRouter.get(`/add`, (req, res) => {
   res.render(`new-post`);
@@ -21,6 +31,7 @@ articlesRouter.post(`/add`, async (req, res) => {
     title: body.title,
     announce: body.announcement,
     fullText: body[`full-text`],
+    categories: body.category
   };
 
   try {

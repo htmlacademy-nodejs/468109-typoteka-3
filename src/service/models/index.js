@@ -18,7 +18,7 @@ const define = (sequelize) => {
   class ArticlesCategory extends Model {}
   ArticlesCategory.init({}, {
     sequelize,
-    tableName: `articlesCategories`
+    tableName: Aliases.ARTICLES_CATEGORIES
   });
 
   Article.belongsToMany(Category, {through: ArticlesCategory, as: Aliases.CATEGORIES});

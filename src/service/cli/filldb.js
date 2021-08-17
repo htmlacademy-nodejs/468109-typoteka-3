@@ -46,7 +46,7 @@ const generatePublications = (count, titles, sentences, categories, comments) =>
   }));
 };
 
-const runGenerateData = async (args) => {
+const runFillDb = async (args) => {
   const [count] = args;
   const countData = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
@@ -97,6 +97,6 @@ const runGenerateData = async (args) => {
 module.exports = {
   name: `--filldb`,
   run(args) {
-    runGenerateData(args);
+    runFillDb(args);
   }
 };

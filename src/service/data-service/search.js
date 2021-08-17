@@ -1,14 +1,25 @@
 'use strict';
 
-const {checkTextMatch} = require(`../../utils`);
+const {Op} = require(`sequelize`);
+
+const Aliases = require(`../constants/aliases`);
 
 class SearchService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(orm) {
+    this._Articles = orm.models.Article;
   }
 
-  findAll(search) {
-    return this._articles.filter((item) => checkTextMatch(search, item.title));
+  async findAll(searchText) {
+    const articles = await this._Articles.getAll({
+      where: {
+        title: {
+          [Op.substring]: searchText
+        }
+      },
+      include: [Aliases.CATEGORIES]
+    });
+
+    return articles.map((article) => article.get());
   }
 }
 

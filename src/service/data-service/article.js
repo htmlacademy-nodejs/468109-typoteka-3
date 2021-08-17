@@ -1,75 +1,98 @@
 'use strict';
 
-const {nanoid} = require(`nanoid`);
+const Sequelize = require(`sequelize`);
+const Aliases = require(`../constants/aliases`);
 
-const {
-  MAX_ID_LENGTH
-} = require(`../../constants`);
+const DEFAULT_COMMENTS_COUNT = 5;
 
 class ArticleService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(orm) {
+    this._Article = orm.models.Article;
+    this._Comment = orm.models.Comment;
+    this._Category = orm.models.Category;
+    this._ArticlesCategory = orm.models.ArticlesCategory;
   }
 
-  create(article) {
-    const newArticle = Object
-      .assign({id: nanoid(MAX_ID_LENGTH), comments: []}, article);
+  async create(articleData) {
+    const article = await this._Article.create(articleData);
+    await article.addCategories(articleData.categories);
 
-    this._articles.push(newArticle);
-    return newArticle;
+    return article.get();
   }
 
-  drop(id) {
-    const article = this._articles.find((item) => item.id === id);
+  async drop(id) {
+    const deletedRows = await this._Article.destroy({
+      where: {id},
+    });
 
-    if (!article) {
-      return null;
+    return !!deletedRows;
+  }
+
+  async findAll(needComments) {
+    const include = [Aliases.CATEGORIES];
+
+    if (needComments) {
+      include.push(Aliases.COMMENTS);
     }
 
-    this._articles = this._articles.filter((item) => item.id !== id);
-    return article;
-  }
+    const articles = await this._Article.findAll({include});
 
-  findAll() {
-    return this._articles;
+    return articles.map((article) => article.get());
   }
 
   findOne(id) {
-    return this._articles.find((item) => item.id === id);
+    return this._Article.findByPk(id, {
+      include: [
+        Aliases.CATEGORIES,
+        Aliases.COMMENTS
+      ]}
+    );
   }
 
-  update(id, article) {
-    const oldArticle = this._articles
-      .find((item) => item.id === id);
+  async update(id, article) {
+    const [updatedRows] = await this._Article.update(article, {
+      where: {id}
+    });
 
-    return Object.assign(oldArticle, article);
+    return !!updatedRows;
   }
 
-  findAllComments(article) {
-    return article.comments;
+  findAllComments(articleId) {
+    return this._Comment.findAll({
+      where: {articleId},
+      raw: true
+    });
   }
 
-  findOneComment(article, commentId) {
-    return article.comments.find((item) => item.id === commentId);
+  findLastComments(count) {
+    const commentsCount = count || DEFAULT_COMMENTS_COUNT;
+
+    return this._Comment.findAll({
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      limit: commentsCount
+    });
   }
 
-  createComment(article, comment) {
-    const createdComment = Object.assign({id: nanoid(MAX_ID_LENGTH)}, comment);
-    const newComments = article.comments.concat(createdComment);
-
-    this.update(article.id, {comments: newComments});
-
-    return createdComment;
+  findOneComment(articleId, commentId) {
+    return this._Comment.findOne({
+      where: {articleId, id: commentId}
+    });
   }
 
-  dropComment(article, commentId) {
-    const droppedComment = this.findOneComment(article, commentId);
+  createComment(articleId, comment) {
+    return this._Comment.create({
+      articleId,
+      ...comment
+    });
+  }
 
-    const newComments = article.comments.filter((item) => item.id !== commentId);
-
-    this.update(article.id, {comments: newComments});
-
-    return droppedComment;
+  dropComment(commentId) {
+    const deletedRows = this._Comment.destroy({
+      where: {commentId}
+    });
+    return !!deletedRows;
   }
 }
 

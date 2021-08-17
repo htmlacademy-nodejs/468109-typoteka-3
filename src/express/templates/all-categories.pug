@@ -14,7 +14,7 @@ block content
         each category in categories
           li.category__list-item
             form(action='#' method='POST')
-              input#modify-form-category-1(type='text' name='category-1' value=category)
+              input#modify-form-category-1(type='text' name='category-1' value=category.name)
               label(for='modify-form-category-1')
                 span.visually-hidden Редактировать категорию
               button.category__button.button.button--category(type='submit') Сохранить

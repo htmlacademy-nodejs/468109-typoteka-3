@@ -14,7 +14,7 @@ myRouter.get(`/`, async (req, res) => {
   res.render(`my`, {articles});
 });
 myRouter.get(`/comments`, async (req, res) => {
-  const articles = await api.getArticles();
+  const articles = await api.getArticles({comment: true});
   const preparedArticles = articles.slice(0, 3);
 
   const comments = getExtendedEntitiesArray(preparedArticles, `comments`, [`announce`, `createdDate`]);

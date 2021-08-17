@@ -1,45 +1,50 @@
 extends layout.pug
 
 block content
-    main
-        section.post
-            h1.visually-hidden Пост
-            section.post__content
-                h2.visually-hidden Основное содержание
-                .post__wrapper
-                    .post__head
-                        a.post__backwards.button.button--backwards(href='#') Назад
-                        time.post__date(datetime=article.createdDate) #{article.createdDate}
-                        h2.post__title.title.title--main #{article.title}
-                        ul.post__themes.themes
-                            each category in article.category
-                                li.themes__item
-                                    a.themes__item-link(href='#')
-                                        | #{category}
-                                        sup 88
-                                    button.themes__remove-btn(type='button') Удалить категорию
-                    .post__picture
-                        img(src='/img/sea-fullsize@1x.jpg' alt='пейзаж море, скалы, пляж')
-                    .post__text
-                        h3 #{article.title}
-                        p #{article.fullText}
-            .post__wrapper.post__wrapper--comments
-                section.post__comments.comments
-                    h2.comments__title.title.title--middle Комментарии
-                    ul.comments__list
-                        each comment in article.comments
-                          li.comments__comment
-                              .comments__avatar.avatar
-                                  img(src='/img/avatar-1.png' alt='аватар пользователя')
-                              .comments__text
-                                  .comments__head
-                                      p Евгений Петров •
-                                      time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                                  p.comments__message #{comment.text}
-                    .comments__footer.comments__footer--user
-                        form(action='#' method='POST')
-                            .comments__avatar.avatar
-                                img(src='/img/avatar-2.png' alt='аватар пользователя')
-                            label
-                                textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
-                            button.comments__button.button.button--colored(type='submit') Опубликовать
+  -
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleString(`ru-RU`, {hour12: false});
+    }
+  main
+    section.post
+      h1.visually-hidden Пост
+      section.post__content
+        h2.visually-hidden Основное содержание
+        .post__wrapper
+          .post__head
+            a.post__backwards.button.button--backwards(href='#') Назад
+            time.post__date(datetime=article.createdDate) #{article.createdDate}
+            h2.post__title.title.title--main #{article.title}
+            ul.post__themes.themes
+              each category in article.categories
+                li.themes__item
+                  a.themes__item-link(href='#')
+                    | #{category.name}
+                    sup #{category.count}
+                  button.themes__remove-btn(type='button') Удалить категорию
+          .post__picture
+            img(src='/img/sea-fullsize@1x.jpg' alt='пейзаж море, скалы, пляж')
+          .post__text
+            h3 #{article.title}
+            p #{article.fullText}
+      .post__wrapper.post__wrapper--comments
+        section.post__comments.comments
+          h2.comments__title.title.title--middle Комментарии
+          ul.comments__list
+            each comment in article.comments
+              li.comments__comment
+                .comments__avatar.avatar
+                  img(src='/img/avatar-1.png' alt='аватар пользователя')
+                .comments__text
+                  .comments__head
+                    p Евгений Петров •
+                    time.comments__date(datetime=comment.createdAt) #{formatDate(comment.createdAt)}
+                  p.comments__message #{comment.text}
+          .comments__footer.comments__footer--user
+            form(action='#' method='POST')
+              .comments__avatar.avatar
+                img(src='/img/avatar-2.png' alt='аватар пользователя')
+              label
+                textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
+              button.comments__button.button.button--colored(type='submit') Опубликовать

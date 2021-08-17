@@ -1,17 +1,41 @@
 'use strict';
 
+const Sequelize = require(`sequelize`);
+const Aliases = require(`../constants/aliases`);
+
 class CategoryService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(orm) {
+    this._Categories = orm.models.Category;
+    this._ArticlesCategory = orm.models.ArticlesCategory;
   }
 
-  findAll() {
-    const categories = this._articles.reduce((res, offer) => {
-      offer.category.forEach((category) => res.add(category));
-      return res;
-    }, new Set());
+  async findAll(isNeedCount) {
+    if (isNeedCount) {
+      const result = await this._Categories.findAll({
+        attributes: [
+          `id`,
+          `name`,
+          [
+            Sequelize.fn(`COUNT`, `*`),
+            `count`
+          ]
+        ],
+        group: [Sequelize.col(`Category.id`)],
+        include: [{
+          model: this._ArticlesCategory,
+          as: Aliases.ARTICLES_CATEGORIES,
+          attributes: []
+        }]
+      });
 
-    return [...categories];
+      return result.map((category) => category.get());
+    } else {
+      return this._Categories.findAll({raw: true});
+    }
+  }
+
+  async findOne(id) {
+    return this._Categories.findByPk(id);
   }
 }
 

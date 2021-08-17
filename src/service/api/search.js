@@ -10,10 +10,10 @@ module.exports = (app, service) => {
 
   app.use(`/search`, route);
 
-  route.get(`/`, searchValidator, (req, res) => {
+  route.get(`/`, searchValidator, async (req, res) => {
     const {query} = req.query;
 
-    const results = service.findAll(query);
+    const results = await service.findAll(query);
 
     if (!results || results.length === 0) {
       return res.status(StatusCodes.NOT_FOUND)
