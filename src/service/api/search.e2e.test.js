@@ -2,15 +2,24 @@
 
 const express = require(`express`);
 const request = require(`supertest`);
+const Sequelize = require(`sequelize`);
 const {StatusCodes} = require(`http-status-codes`);
 
+const initDB = require(`../lib/init-db`);
 const search = require(`./search`);
 const DataService = require(`../data-service/search`);
-const {mockArticles} = require(`../constants/mocksData`);
+const {mockArticles, mockCategories} = require(`../constants/mocksData`);
+
+const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 const app = express();
 app.use(express.json());
-search(app, new DataService(mockArticles));
+
+beforeAll(async () => {
+  await initDB(mockDB, {categories: mockCategories, articles: mockArticles});
+
+  search(app, new DataService(mockDB));
+});
 
 describe(`API returns article based on search query`, () => {
   let response;
@@ -25,7 +34,7 @@ describe(`API returns article based on search query`, () => {
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(StatusCodes.OK));
   test(`1 offer found`, () => expect(response.body.length).toBe(1));
-  test(`Offer has correct id`, () => expect(response.body[0].id).toBe(`VDSjAt`));
+  test(`Article has correct title`, () => expect(response.body[0].title).toBe(`Обзор новейшего смартфона`));
 });
 
 test(`API returns code 404 if nothing is found`,

@@ -1,6 +1,5 @@
 'use strict';
 
-const Sequelize = require(`sequelize`);
 const Aliases = require(`../constants/aliases`);
 
 const DEFAULT_COMMENTS_COUNT = 5;
@@ -17,7 +16,7 @@ class ArticleService {
     const article = await this._Article.create(articleData);
     await article.addCategories(articleData.categories);
 
-    return article.get();
+    return !!article;
   }
 
   async drop(id) {
@@ -77,7 +76,8 @@ class ArticleService {
 
   findOneComment(articleId, commentId) {
     return this._Comment.findOne({
-      where: {articleId, id: commentId}
+      where: {articleId, id: commentId},
+      raw: true
     });
   }
 
@@ -90,7 +90,7 @@ class ArticleService {
 
   dropComment(commentId) {
     const deletedRows = this._Comment.destroy({
-      where: {commentId}
+      where: {id: commentId}
     });
     return !!deletedRows;
   }

@@ -57,6 +57,13 @@ class API {
       data
     });
   }
+
+  async addCategory(data) {
+    return this._load(`/category`, {
+      method: `POST`,
+      data
+    });
+  }
 }
 
 const TIMEOUT = 1000;

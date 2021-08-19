@@ -3,19 +3,22 @@
 
 const express = require(`express`);
 const request = require(`supertest`);
+const Sequelize = require(`sequelize`);
 const {StatusCodes} = require(`http-status-codes`);
 
+const initDB = require(`../lib/init-db`);
 const article = require(`./article`);
 const DataService = require(`../data-service/article`);
-const {mockArticles} = require(`../constants/mocksData`);
+const {mockArticles, mockCategories} = require(`../constants/mocksData`);
 
-const createAPI = () => {
+const createAPI = async () => {
+  const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
+  await initDB(mockDB, {categories: mockCategories, articles: mockArticles});
+
   const app = express();
 
-  const clonedData = [...mockArticles];
-
   app.use(express.json());
-  article(app, new DataService(clonedData));
+  article(app, new DataService(mockDB));
   return app;
 };
 
@@ -23,11 +26,11 @@ const invalidId = `NOEXST`;
 
 describe(`GET list of articles`, () => {
   describe(`API returns a list of all articles`, () => {
-    const app = createAPI();
-
     let response;
 
     beforeAll(async () => {
+      const app = await createAPI();
+
       response = await request(app)
         .get(`/article`);
     });
@@ -36,20 +39,20 @@ describe(`GET list of articles`, () => {
 
     test(`Returns a list of 5 articles`, () => expect(response.body.length).toBe(5));
 
-    test(`First articles's id equals "cxGQ17"`, () => expect(response.body[0].id).toBe(`cxGQ17`));
+    test(`First articles's title equals ${mockArticles[0].title}`, () => expect(response.body[0].title).toBe(mockArticles[0].title));
   });
 });
 
 describe(`GET an article`, () => {
-  const updatedArticleId = mockArticles[0].id;
+  const updatedArticleId = 1;
   const updatedArticleTitle = mockArticles[0].title;
 
   describe(`API returns an article with given id`, () => {
-    const app = createAPI();
-
     let response;
 
     beforeAll(async () => {
+      const app = await createAPI();
+
       response = await request(app)
         .get(`/article/${updatedArticleId}`);
     });
@@ -67,12 +70,14 @@ describe(`POST an article`, () => {
       title: `Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
       announce: `Гладим котиков`,
-      createdDate: 1621239403082
+      publicationDate: 1621239403082
     };
-    const app = createAPI();
+    let app;
     let response;
 
     beforeAll(async () => {
+      app = await createAPI();
+
       response = await request(app)
         .post(`/article`)
         .send(newArticle);
@@ -80,7 +85,7 @@ describe(`POST an article`, () => {
 
     test(`Status code 201`, () => expect(response.statusCode).toBe(StatusCodes.CREATED));
 
-    test(`Returns article created`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
+    test(`Return true`, () => expect(response.body).toEqual(true));
 
     test(`Articles count is changed`, () => request(app)
       .get(`/article`)
@@ -97,7 +102,11 @@ describe(`POST an article`, () => {
       createdDate: 1621239403082
     };
 
-    const app = createAPI();
+    let app;
+
+    beforeAll(async () => {
+      app = await createAPI();
+    });
 
     test(`Without any required property response code is 400`, async () => {
       for (const key of Object.keys(newArticle)) {
@@ -113,7 +122,7 @@ describe(`POST an article`, () => {
 });
 
 describe(`PUT an article`, () => {
-  const updatedArticleId = mockArticles[0].id;
+  const updatedArticleId = 1;
 
   describe(`API changes existent article`, () => {
     const newArticle = {
@@ -121,13 +130,15 @@ describe(`PUT an article`, () => {
       title: `Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
       announce: `Гладим котиков`,
-      createdDate: 1621239403082
+      publicationDate: 1621239403082
     };
 
-    const app = createAPI();
+    let app;
     let response;
 
     beforeAll(async () => {
+      app = await createAPI();
+
       response = await request(app)
         .put(`/article/${updatedArticleId}`)
         .send(newArticle);
@@ -135,7 +146,7 @@ describe(`PUT an article`, () => {
 
     test(`Status code 200`, () => expect(response.statusCode).toBe(StatusCodes.OK));
 
-    test(`Returns changed article`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
+    test(`Returns true`, () => expect(response.body).toEqual(true));
 
     test(`Article is really changed`, () => request(app)
       .get(`/article/${updatedArticleId}`)
@@ -151,7 +162,7 @@ describe(`PUT an article`, () => {
       title: `Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
       announce: `Гладим котиков`,
-      createdDate: 1621239403082
+      publicationDate: 1621239403082
     };
 
     return request(app)
@@ -178,21 +189,23 @@ describe(`PUT an article`, () => {
 });
 
 describe(`DELETE an article`, () => {
-  const deletedArticleId = mockArticles[0].id;
+  const deletedArticleId = 1;
 
   describe(`API correctly deletes an article`, () => {
-    const app = createAPI();
+    let app;
 
     let response;
 
     beforeAll(async () => {
+      app = await createAPI();
+
       response = await request(app)
         .delete(`/article/${deletedArticleId}`);
     });
 
     test(`Status code 200`, () => expect(response.statusCode).toBe(StatusCodes.OK));
 
-    test(`Returns deleted article`, () => expect(response.body.id).toBe(deletedArticleId));
+    test(`Returns true`, () => expect(response.body).toBe(true));
 
     test(`Article count is 4 now`, () => request(app)
       .get(`/article`)
@@ -210,7 +223,7 @@ describe(`DELETE an article`, () => {
 });
 
 describe(`POST an article comment`, () => {
-  const updatedArticleId = mockArticles[0].id;
+  const updatedArticleId = 1;
 
   test(`API refuses to create a comment to non-existent article and returns status code 404`, async () => {
     const app = await createAPI();
@@ -234,8 +247,8 @@ describe(`POST an article comment`, () => {
 });
 
 describe(`DELETE an article comment`, () => {
-  const updatedArticleId = mockArticles[0].id;
-  const deletedCommentId = mockArticles[0].comments[1].id;
+  const updatedArticleId = 1;
+  const deletedCommentId = 1;
 
   test(`API refuses to delete non-existent article`, async () => {
     const app = await createAPI();

@@ -64,28 +64,27 @@ module.exports = (app, service) => {
   });
 
   route.get(`/:articleId/comments`, articleExists(service), async (req, res) => {
-    const {article} = res.locals;
+    const {articleId} = req.params;
 
-    const comments = await service.findAllComments(article);
+    const comments = await service.findAllComments(articleId);
 
     return res.status(StatusCodes.OK)
       .json(comments);
   });
 
   route.post(`/:articleId/comments/`, [articleExists(service), entityValidator(commentKeys, entityNames.COMMENT)], async (req, res) => {
-    const {article} = res.locals;
+    const {articleId} = req.params;
 
-    const newComment = await service.createComment(article, req.body);
+    const newComment = await service.createComment(articleId, req.body);
 
     return res.status(StatusCodes.CREATED)
       .json(newComment);
   });
 
   route.delete(`/:articleId/comments/:commentId`, [articleExists(service), commentExists(service), entityValidator(commentKeys, entityNames.COMMENT)], async (req, res) => {
-    const {article} = res.locals;
     const {commentId} = req.params;
 
-    const deletedComment = await service.dropComment(article, commentId);
+    const deletedComment = await service.dropComment(commentId);
 
     return res.status(StatusCodes.OK)
       .json(deletedComment);

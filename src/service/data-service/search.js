@@ -10,7 +10,7 @@ class SearchService {
   }
 
   async findAll(searchText) {
-    const articles = await this._Articles.getAll({
+    const articles = await this._Articles.findAll({
       where: {
         title: {
           [Op.substring]: searchText

@@ -37,6 +37,10 @@ class CategoryService {
   async findOne(id) {
     return this._Categories.findByPk(id);
   }
+
+  async createCategory(categoryData) {
+    return this._Categories.create(categoryData);
+  }
 }
 
 module.exports = CategoryService;
