@@ -71,7 +71,7 @@ const runFillDb = async (args) => {
 
   const articles = generatePublications(countData, titles, sentences, categories, comments);
 
-  return await initDb(sequelize, {articles, categories});
+  return initDb(sequelize, {articles, categories});
 };
 
 module.exports = {

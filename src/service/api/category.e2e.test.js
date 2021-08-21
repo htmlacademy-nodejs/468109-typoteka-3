@@ -8,7 +8,7 @@ const {StatusCodes} = require(`http-status-codes`);
 const initDB = require(`../lib/init-db`);
 const category = require(`./category`);
 const DataService = require(`../data-service/category`);
-const {mockArticles, mockCategories} = require(`../constants/mocksData`);
+const {mockArticles, mockCategories} = require(`../constants/mocks-data`);
 
 const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 

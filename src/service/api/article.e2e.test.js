@@ -9,7 +9,7 @@ const {StatusCodes} = require(`http-status-codes`);
 const initDB = require(`../lib/init-db`);
 const article = require(`./article`);
 const DataService = require(`../data-service/article`);
-const {mockArticles, mockCategories} = require(`../constants/mocksData`);
+const {mockArticles, mockCategories} = require(`../constants/mocks-data`);
 
 const createAPI = async () => {
   const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});

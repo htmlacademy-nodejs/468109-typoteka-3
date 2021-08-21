@@ -26,5 +26,5 @@ module.exports = async (sequelize, {articles, categories}) => {
     );
   });
 
-  return await Promise.all(articlePromises);
+  return Promise.all(articlePromises);
 };

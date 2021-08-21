@@ -4,7 +4,7 @@ const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
 const asyncHandler = require(`express-async-handler`);
 
-const searchValidator = require(`../middlewares/searchValidator`);
+const searchValidator = require(`../middlewares/search-validator`);
 
 module.exports = (app, service) => {
   const route = new Router();

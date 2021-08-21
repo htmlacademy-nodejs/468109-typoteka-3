@@ -5,9 +5,9 @@ const {StatusCodes} = require(`http-status-codes`);
 const asyncHandler = require(`express-async-handler`);
 
 const {articleKeys, commentKeys, entityNames} = require(`../constants/entities`);
-const entityValidator = require(`../middlewares/entityValidator`);
-const articleExists = require(`../middlewares/articleExists`);
-const commentExists = require(`../middlewares/commentExists`);
+const entityValidator = require(`../middlewares/entity-validator`);
+const articleExists = require(`../middlewares/article-exists`);
+const commentExists = require(`../middlewares/comment-exists`);
 
 module.exports = (app, service) => {
   const route = new Router();
