@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
+const asyncHandler = require(`express-async-handler`);
 
 const searchValidator = require(`../middlewares/searchValidator`);
 
@@ -10,7 +11,7 @@ module.exports = (app, service) => {
 
   app.use(`/search`, route);
 
-  route.get(`/`, searchValidator, async (req, res) => {
+  route.get(`/`, searchValidator, asyncHandler(async (req, res) => {
     const {query} = req.query;
 
     const results = await service.findAll(query);
@@ -22,5 +23,5 @@ module.exports = (app, service) => {
 
     return res.status(StatusCodes.OK)
       .json(results);
-  });
+  }));
 };
