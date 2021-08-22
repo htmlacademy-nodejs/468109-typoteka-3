@@ -65,9 +65,12 @@ const runServer = async (args) => {
   }
 };
 
-module.exports = {
-  name: `--server`,
-  run(args) {
-    runServer(args);
-  }
-};
+module.exports.name = `--server`;
+module.exports.run = runServer;
+
+// module.exports = {
+//   name: `--server`,
+//   run(args) {
+//     return runServer(args);
+//   }
+// };

@@ -77,6 +77,6 @@ const runFillDb = async (args) => {
 module.exports = {
   name: `--filldb`,
   run(args) {
-    runFillDb(args);
+    return runFillDb(args);
   }
 };
