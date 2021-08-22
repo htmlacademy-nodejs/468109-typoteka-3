@@ -11,7 +11,7 @@ articlesRouter.get(`/category/:id`, async (req, res) => {
   const {id} = req.params;
 
   const [articles, categories, category] = await Promise.all([
-    api.getArticles(true),
+    api.getArticles({comments: true}),
     api.getCategories(true),
     api.getCategory(id)
   ]);

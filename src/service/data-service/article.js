@@ -94,6 +94,22 @@ class ArticleService {
     });
     return !!deletedRows;
   }
+
+  async findPage({limit, offset, comments}) {
+    const include = [Aliases.CATEGORIES];
+
+    if (comments) {
+      include.push(Aliases.COMMENTS);
+    }
+
+    const {count, rows} = await this._Article.findAndCountAll({
+      limit,
+      offset,
+      include,
+      distinct: true
+    });
+    return {count, articles: rows};
+  }
 }
 
 module.exports = ArticleService;
