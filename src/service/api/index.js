@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 
-const sequelize = require(`../lib/sequelize`);
+const getSequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models`);
 const category = require(`./category`);
 const search = require(`./search`);
@@ -16,6 +16,7 @@ const {
 
 const getAppRoutes = () => {
   const app = new Router();
+  const sequelize = getSequelize();
   defineModels(sequelize);
 
   category(app, new CategoryService(sequelize));

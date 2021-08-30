@@ -3,7 +3,7 @@
 const express = require(`express`);
 const {StatusCodes, ReasonPhrases} = require(`http-status-codes`);
 
-const sequelize = require(`../lib/sequelize`);
+const getSequelize = require(`../lib/sequelize`);
 const getApiRoutes = require(`../api`);
 const {getLogger} = require(`../lib/logger`);
 
@@ -15,7 +15,7 @@ const runServer = async (args) => {
   try {
     logger.info(`Trying to connect to database...`);
 
-    await sequelize.authenticate();
+    await getSequelize().authenticate();
   } catch (err) {
     logger.error(`An error occurred: ${err.message}`);
 
@@ -65,12 +65,9 @@ const runServer = async (args) => {
   }
 };
 
-module.exports.name = `--server`;
-module.exports.run = runServer;
-
-// module.exports = {
-//   name: `--server`,
-//   run(args) {
-//     return runServer(args);
-//   }
-// };
+module.exports = {
+  name: `--server`,
+  run(args) {
+    return runServer(args);
+  }
+};

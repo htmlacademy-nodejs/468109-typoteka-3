@@ -2,7 +2,7 @@
 
 const chalk = require(`chalk`);
 
-const sequelize = require(`../lib/sequelize`);
+const getSequelize = require(`../lib/sequelize`);
 const initDb = require(`../lib/init-db`);
 
 const {
@@ -47,6 +47,8 @@ const generatePublications = (count, titles, sentences, categories, comments) =>
 const runFillDb = async (args) => {
   const [count] = args;
   const countData = Number.parseInt(count, 10) || DEFAULT_COUNT;
+
+  const sequelize = getSequelize();
 
   if (countData > MAX_COUNT) {
     return console.error(chalk.red(`Не больше 1000 публикаций`));
