@@ -6,6 +6,7 @@ const asyncHandler = require(`express-async-handler`);
 
 const {categoryKeys, entityNames} = require(`../constants/entities`);
 const entityValidator = require(`../middlewares/entity-validator`);
+const categorySchema = require(`../schemas/category`);
 
 module.exports = (app, service) => {
   const route = new Router();
