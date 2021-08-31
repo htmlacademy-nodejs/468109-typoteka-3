@@ -13,9 +13,15 @@ module.exports = (app, service) => {
   app.use(`/category`, route);
 
   route.get(`/`, asyncHandler(async (req, res) => {
-    const {count} = req.query;
+    const {count, offset, limit} = req.query;
+    let categories;
 
-    const categories = await service.findAll(count);
+    if (offset || limit) {
+      categories = await service.findPage({limit, offset});
+    } else {
+      categories = await service.findAll(count);
+    }
+
     res.status(StatusCodes.OK)
       .json(categories);
   }));

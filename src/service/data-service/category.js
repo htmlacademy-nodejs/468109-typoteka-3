@@ -34,6 +34,15 @@ class CategoryService {
     }
   }
 
+  async findPage({limit, offset}) {
+    const {count, rows} = await this._Categories.findAndCountAll({
+      limit,
+      offset,
+      distinct: true
+    });
+    return {count, categories: rows};
+  }
+
   async findOne(id) {
     return this._Categories.findByPk(id);
   }

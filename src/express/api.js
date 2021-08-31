@@ -32,8 +32,8 @@ class API {
     return this._load(`/category/${id}`);
   }
 
-  async getCategories(count) {
-    return this._load(`/category`, {params: {count}});
+  async getCategories({count, limit, offset}) {
+    return this._load(`/category`, {params: {count, limit, offset}});
   }
 
   async getComments(id) {
