@@ -4,7 +4,7 @@ const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
 const asyncHandler = require(`express-async-handler`);
 
-const {categoryKeys, entityNames} = require(`../constants/entities`);
+const {entityNames} = require(`../constants/entities`);
 const entityValidator = require(`../middlewares/entity-validator`);
 const categorySchema = require(`../schemas/category`);
 
@@ -34,7 +34,7 @@ module.exports = (app, service) => {
       .json(category);
   }));
 
-  route.post(`/`, entityValidator(categoryKeys, entityNames.CATEGORY), asyncHandler(async (req, res) => {
+  route.post(`/`, entityValidator(categorySchema, entityNames.CATEGORY), asyncHandler(async (req, res) => {
     const {body} = req;
 
     const newCategory = await service.createCategory(body);

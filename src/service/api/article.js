@@ -4,10 +4,12 @@ const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
 const asyncHandler = require(`express-async-handler`);
 
-const {articleKeys, commentKeys, entityNames} = require(`../constants/entities`);
+const {entityNames} = require(`../constants/entities`);
 const entityValidator = require(`../middlewares/entity-validator`);
 const articleExists = require(`../middlewares/article-exists`);
 const commentExists = require(`../middlewares/comment-exists`);
+const articleSchema = require(`../schemas/article`);
+const commentSchema = require(`../schemas/comment`);
 
 module.exports = (app, service) => {
   const route = new Router();
@@ -28,7 +30,7 @@ module.exports = (app, service) => {
       .json(articles);
   });
 
-  route.post(`/`, entityValidator(articleKeys, entityNames.ARTICLE), asyncHandler(async (req, res) => {
+  route.post(`/`, entityValidator(articleSchema, entityNames.ARTICLE), asyncHandler(async (req, res) => {
     const article = await service.create(req.body);
 
     return res.status(StatusCodes.CREATED)
@@ -52,7 +54,7 @@ module.exports = (app, service) => {
       .json(article);
   }));
 
-  route.put(`/:articleId`, [articleExists(service), entityValidator(articleKeys, entityNames.ARTICLE)], asyncHandler(async (req, res) => {
+  route.put(`/:articleId`, [articleExists(service), entityValidator(articleSchema, entityNames.ARTICLE)], asyncHandler(async (req, res) => {
     const {articleId} = req.params;
 
     const newArticle = await service.update(articleId, req.body);
@@ -79,7 +81,7 @@ module.exports = (app, service) => {
       .json(comments);
   }));
 
-  route.post(`/:articleId/comments/`, [articleExists(service), entityValidator(commentKeys, entityNames.COMMENT)], asyncHandler(async (req, res) => {
+  route.post(`/:articleId/comments/`, [articleExists(service), entityValidator(commentSchema, entityNames.COMMENT)], asyncHandler(async (req, res) => {
     const {articleId} = req.params;
 
     const newComment = await service.createComment(articleId, req.body);
@@ -88,7 +90,7 @@ module.exports = (app, service) => {
       .json(newComment);
   }));
 
-  route.delete(`/:articleId/comments/:commentId`, [articleExists(service), commentExists(service), entityValidator(commentKeys, entityNames.COMMENT)], asyncHandler(async (req, res) => {
+  route.delete(`/:articleId/comments/:commentId`, [articleExists(service), commentExists(service), entityValidator(commentSchema, entityNames.COMMENT)], asyncHandler(async (req, res) => {
     const {commentId} = req.params;
 
     const deletedComment = await service.dropComment(commentId);
