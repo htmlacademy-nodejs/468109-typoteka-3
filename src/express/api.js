@@ -2,6 +2,8 @@
 
 const axios = require(`axios`);
 
+const {HttpMethod} = require(`./constants`);
+
 class API {
   constructor(baseURL, timeout) {
     this._http = axios.create({
@@ -46,21 +48,28 @@ class API {
 
   async createArticle(data) {
     return this._load(`/article`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }
 
   async updateArticle(data, id) {
     return this._load(`/article/${id}`, {
-      method: `PUT`,
+      method: HttpMethod.PUT,
+      data
+    });
+  }
+
+  createComment(data, id) {
+    return this._load(`/article/${id}/comments`, {
+      method: HttpMethod.POST,
       data
     });
   }
 
   async addCategory(data) {
     return this._load(`/category`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }

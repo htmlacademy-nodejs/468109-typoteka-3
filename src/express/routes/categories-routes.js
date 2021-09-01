@@ -10,9 +10,9 @@ const api = getAPI();
 
 const CATEGORIES_PER_PAGE = 8;
 
-const getCategoriesRoute = asyncHandler(async (req, res) => {
+const renderCategories = asyncHandler(async (req, res, meta) => {
   let {page = 1} = req.query;
-  const {errors} = res.locals;
+  const {errors} = meta;
   const limit = CATEGORIES_PER_PAGE;
   const offset = (page - 1) * CATEGORIES_PER_PAGE;
 
@@ -23,17 +23,16 @@ const getCategoriesRoute = asyncHandler(async (req, res) => {
   res.render(`all-categories`, {categories, page, totalPages, errors});
 });
 
-categoriesRouter.get(`/`, getCategoriesRoute);
+categoriesRouter.get(`/`, renderCategories);
 
 categoriesRouter.post(`/`, asyncHandler(async (req, res) => {
   const {body} = req;
 
   try {
     await api.addCategory(body);
-    getCategoriesRoute(req, res);
+    renderCategories(req, res);
   } catch (err) {
-    res.locals.errors = err.response.data.message;
-    getCategoriesRoute(req, res);
+    renderCategories(req, res, {errors: err.response.data.message});
   }
 }));
 

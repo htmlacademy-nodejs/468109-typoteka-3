@@ -4,15 +4,24 @@ const {Router} = require(`express`);
 const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
+const upload = require(`../middlewares/upload`);
 
 const articlesRouter = new Router();
 const api = getAPI();
 
-const getNewPostRoute = (req, res) => {
-  const {errors, article} = res.locals;
+const renderNewPost = (req, res, meta) => {
+  const {errors, article, editMode} = meta;
 
-  res.render(`new-post`, {article, errors});
+  res.render(`new-post`, {article, errors, editMode});
 };
+
+const renderPost = asyncHandler(async (req, res, meta = {}) => {
+  const {id} = req.params;
+  const {errors} = meta;
+  const article = await api.getArticle(id);
+
+  res.render(`post`, {article, errors});
+});
 
 articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
   const {id} = req.params;
@@ -26,14 +35,15 @@ articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
   return res.render(`articles-by-category`, {articles, categories, category});
 }));
 
-articlesRouter.get(`/add`, getNewPostRoute);
+articlesRouter.get(`/add`, renderNewPost);
 
-articlesRouter.post(`/add`, asyncHandler(async (req, res) => {
-  const {body} = req;
+articlesRouter.post(`/add`, upload.single(`photo`), asyncHandler(async (req, res) => {
+  const {body, file} = req;
 
   const articleData = {
     publicationDate: body.date,
     title: body.title,
+    photo: file.filename,
     announce: body.announce,
     fullText: body[`full-text`],
     categories: body.category
@@ -43,43 +53,79 @@ articlesRouter.post(`/add`, asyncHandler(async (req, res) => {
     await api.createArticle(articleData);
     res.redirect(`/my`);
   } catch (err) {
-    res.locals.errors = err.response.data.message;
-    res.locals.article = articleData;
+    const meta = {
+      article: articleData,
+      errors: err.response.data.message
+    };
 
-    getNewPostRoute(req, res);
+    renderNewPost(req, res, meta);
   }
 }));
 
 articlesRouter.get(`/edit/:id`, asyncHandler(async (req, res) => {
   const {id} = req.params;
-  const article = await api.getArticle(id);
 
-  res.render(`new-post`, {article, editMode: true});
+  const meta = {
+    article: await api.getArticle(id),
+    editMode: true
+  };
+
+  renderNewPost(req, res, meta);
 }));
 
 articlesRouter.post(`/edit/:id`, asyncHandler(async (req, res) => {
   const {body} = req;
   const articleData = {
-    createdDate: body.date,
+    publicationDate: body.date,
     title: body.title,
-    announce: body.announcement,
+    announce: body.announce,
     fullText: body[`full-text`],
+    categories: body.category
   };
   const {id} = req.params;
 
   try {
     await api.updateArticle(articleData, id);
+
     res.redirect(`/my`);
-  } catch (e) {
-    res.redirect(`back`);
+  } catch (err) {
+
+    const meta = {
+      errors: err.response.data.message,
+      article: {
+        id,
+        ...articleData
+      },
+      editMode: true
+    };
+
+    renderNewPost(req, res, meta);
   }
 }));
 
-articlesRouter.get(`/:id`, asyncHandler(async (req, res) => {
-  const {id} = req.params;
-  const article = await api.getArticle(id);
+articlesRouter.get(`/:id`, renderPost);
 
-  res.render(`post`, {article});
+articlesRouter.post(`/:id/comments`, asyncHandler(async (req, res) => {
+  const {id} = req.params;
+  const {message} = req.body;
+
+  const newComment = {
+    text: message
+  };
+
+  try {
+    await api.createComment(newComment, id);
+
+    console.log('here');
+
+    renderPost(req, res);
+  } catch (err) {
+    const meta = {
+      errors: err.response.data.message,
+    };
+
+    renderPost(req, res, meta);
+  }
 }));
 
 module.exports = articlesRouter;
