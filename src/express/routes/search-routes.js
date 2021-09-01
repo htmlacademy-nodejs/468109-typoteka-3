@@ -2,13 +2,14 @@
 
 const {Router} = require(`express`);
 const chalk = require(`chalk`);
+const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
 
 const searchRouter = new Router();
 const api = getAPI();
 
-searchRouter.get(`/`, async (req, res) => {
+searchRouter.get(`/`, asyncHandler(async (req, res) => {
   try {
     const {search} = req.query;
     const results = await api.search(search);
@@ -23,6 +24,6 @@ searchRouter.get(`/`, async (req, res) => {
       results: []
     });
   }
-});
+}));
 
 module.exports = searchRouter;

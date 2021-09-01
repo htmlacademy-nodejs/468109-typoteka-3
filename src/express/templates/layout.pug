@@ -49,6 +49,24 @@ body
             li
               a.pagination__button.button.button--forward(href=`${prefix}page=${updatedPage + 1}` aria-label='Страница вперед') Вперед
 
+  mixin validationError(errors, name)
+
+    if errors
+      each error in errors
+        if error.name === name
+          .form__validation-error
+            ul.form__errors
+              li.form__error #{error.text}
+
+  mixin validationErrors(errors, title)
+
+    if errors
+      .form__validation-error
+        p.form__error-message #{title}
+        ul.form__errors
+          each error in errors
+            li.form__error #{error.text}
+
   div.wrapper
     include partials/header.pug
     block content

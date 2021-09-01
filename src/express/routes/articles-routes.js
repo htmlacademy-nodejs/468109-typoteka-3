@@ -1,13 +1,20 @@
 'use strict';
 
 const {Router} = require(`express`);
+const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
 
 const articlesRouter = new Router();
 const api = getAPI();
 
-articlesRouter.get(`/category/:id`, async (req, res) => {
+const getNewPostRoute = (req, res) => {
+  const {errors, article} = res.locals;
+
+  res.render(`new-post`, {article, errors});
+};
+
+articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
   const {id} = req.params;
 
   const [articles, categories, category] = await Promise.all([
@@ -17,19 +24,17 @@ articlesRouter.get(`/category/:id`, async (req, res) => {
   ]);
 
   return res.render(`articles-by-category`, {articles, categories, category});
-});
+}));
 
-articlesRouter.get(`/add`, (req, res) => {
-  res.render(`new-post`);
-});
+articlesRouter.get(`/add`, getNewPostRoute);
 
-articlesRouter.post(`/add`, async (req, res) => {
+articlesRouter.post(`/add`, asyncHandler(async (req, res) => {
   const {body} = req;
 
   const articleData = {
-    createdDate: body.date,
+    publicationDate: body.date,
     title: body.title,
-    announce: body.announcement,
+    announce: body.announce,
     fullText: body[`full-text`],
     categories: body.category
   };
@@ -37,19 +42,22 @@ articlesRouter.post(`/add`, async (req, res) => {
   try {
     await api.createArticle(articleData);
     res.redirect(`/my`);
-  } catch (e) {
-    res.redirect(`back`);
-  }
-});
+  } catch (err) {
+    res.locals.errors = err.response.data.message;
+    res.locals.article = articleData;
 
-articlesRouter.get(`/edit/:id`, async (req, res) => {
+    getNewPostRoute(req, res);
+  }
+}));
+
+articlesRouter.get(`/edit/:id`, asyncHandler(async (req, res) => {
   const {id} = req.params;
   const article = await api.getArticle(id);
 
   res.render(`new-post`, {article, editMode: true});
-});
+}));
 
-articlesRouter.post(`/edit/:id`, async (req, res) => {
+articlesRouter.post(`/edit/:id`, asyncHandler(async (req, res) => {
   const {body} = req;
   const articleData = {
     createdDate: body.date,
@@ -65,13 +73,13 @@ articlesRouter.post(`/edit/:id`, async (req, res) => {
   } catch (e) {
     res.redirect(`back`);
   }
-});
+}));
 
-articlesRouter.get(`/:id`, async (req, res) => {
+articlesRouter.get(`/:id`, asyncHandler(async (req, res) => {
   const {id} = req.params;
   const article = await api.getArticle(id);
 
   res.render(`post`, {article});
-});
+}));
 
 module.exports = articlesRouter;

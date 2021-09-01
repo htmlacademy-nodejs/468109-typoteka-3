@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
 
@@ -9,7 +10,7 @@ const api = getAPI();
 
 const ARTICLES_PER_PAGE = 8;
 
-mainRouter.get(`/`, async (req, res) => {
+mainRouter.get(`/`, asyncHandler(async (req, res) => {
   let {page = 1} = req.query;
   const limit = ARTICLES_PER_PAGE;
   const offset = (page - 1) * ARTICLES_PER_PAGE;
@@ -23,6 +24,6 @@ mainRouter.get(`/`, async (req, res) => {
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
 
   res.render(`main`, {articles, categories, comments, page, totalPages});
-});
+}));
 
 module.exports = mainRouter;

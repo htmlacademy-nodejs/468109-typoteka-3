@@ -1,6 +1,6 @@
 'use strict';
 
-const {StatusCodes, ReasonPhrases} = require(`http-status-codes`);
+const {StatusCodes} = require(`http-status-codes`);
 
 const getNewEntity = (entity, body) => {
   const bodyKeys = Object.keys(body);
@@ -16,20 +16,6 @@ const getNewEntity = (entity, body) => {
   return {};
 };
 
-// module.exports = (entityKeys, entityName) => (req, res, next) => {
-//   const entity = res.locals[entityName];
-//   const newEntity = getNewEntity(entity, req.body);
-//   const keys = Object.keys(newEntity);
-//   const keysExists = entityKeys.every((key) => keys.includes(key));
-//
-//   if (!keysExists) {
-//     return res.status(StatusCodes.BAD_REQUEST)
-//       .send(ReasonPhrases.BAD_REQUEST);
-//   }
-//
-//   return next();
-// };
-
 module.exports = (schema, entityName) => async (req, res, next) => {
   const entity = res.locals[entityName];
   const newEntity = getNewEntity(entity, req.body);
@@ -40,7 +26,10 @@ module.exports = (schema, entityName) => async (req, res, next) => {
     const {details} = err;
 
     res.status(StatusCodes.BAD_REQUEST).json({
-      message: details.map((errorDescription) => errorDescription.message),
+      message: details.map((errorDescription) => ({
+        name: errorDescription.context.label,
+        text: errorDescription.message
+      })),
       data: newEntity
     });
     return;

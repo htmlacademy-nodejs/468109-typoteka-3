@@ -19,8 +19,9 @@ block content
                   .new-publication__date-block
                     label(for='new-publication-date' aria-label='Календарь')
                     -
-                      const date = new Date((article || {}).createdDate || '')
+                      const date = article && article.publicationDate ? new Date(article.publicationDate) : new Date()
                     input#new-publication-date(type='text' name='date' placeholder=formatDate(date) value=date)
+                +validationError(errors, "date")
               button.new-publication__button.button.button--colored(type='submit') Опубликовать
             a.popup__button.button.button--popup-close(aria-label='Закрыть окно')
               | Закрыть
@@ -30,6 +31,7 @@ block content
                 .form__field
                   label
                     input(type='text' name='title' value=(article || {}).title || '' placeholder='Заголовок' required='')
+                  +validationError(errors, "title")
                 .form__field.form__field--post-image
                   label
                     input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='')
@@ -37,12 +39,18 @@ block content
                     label
                       input.visually-hidden(type='file' name='upload')
                       | Обзор
+                  +validationError(errors, "photo")
                 .new-publication__category-wrapper
                   a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                +validationError(errors, "categories")
                 .form__wrapper.form__wrapper--text
                   .form__field.form__field--publication-text
                     label
-                      textarea(rows='5' name='announcement' placeholder='Анонс публикации') #{(article || {}).announce || ''}
+                      textarea(rows='5' name='announce' placeholder='Анонс публикации') #{(article || {}).announce || ''}
+                  +validationError(errors, "announce")
                   .form__field.form__field--publication-text
                     label
                       textarea(rows='10' name='full-text' placeholder='Полный текст публикации') #{(article || {}).fullText || ''}
+                  +validationError(errors, "fullText")
+
+          +validationErrors(errors, "При добавлении новой статьи произошли ошибки:")

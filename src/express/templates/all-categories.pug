@@ -10,12 +10,15 @@ block content
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
           button.category__button.button.button--category(type='submit') Добавить
+
+        +validationErrors(errors, "При добавлении новой категории произошли ошибки:")
+
       ul.category__list
-        each category in categories
+        each category, index in categories
           li.category__list-item
             form(action='#' method='POST')
-              input#modify-form-category-1(type='text' name='category-1' value=category.name)
-              label(for='modify-form-category-1')
+              input#modify-form-category-1(type='text' name=`category-${index}` value=category.name)
+              label(for=`modify-form-category-${index}`)
                 span.visually-hidden Редактировать категорию
               button.category__button.button.button--category(type='submit') Сохранить
               button.category__button.button.button--category(type='button') Удалить
