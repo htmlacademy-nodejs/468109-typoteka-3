@@ -116,8 +116,6 @@ articlesRouter.post(`/:id/comments`, asyncHandler(async (req, res) => {
   try {
     await api.createComment(newComment, id);
 
-    console.log('here');
-
     renderPost(req, res);
   } catch (err) {
     const meta = {

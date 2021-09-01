@@ -32,10 +32,10 @@ module.exports = (app, service) => {
   });
 
   route.post(`/`, entityValidator(articleSchema, entityNames.ARTICLE), asyncHandler(async (req, res) => {
-    const article = await service.create(req.body);
+    const isCreated = await service.create(req.body);
 
     return res.status(StatusCodes.CREATED)
-      .json(article);
+      .json(isCreated);
   }));
 
   route.get(`/comments`, asyncHandler(async (req, res) => {

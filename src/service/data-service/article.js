@@ -14,7 +14,12 @@ class ArticleService {
 
   async create(articleData) {
     const article = await this._Article.create(articleData);
-    await article.addCategories(articleData.categories);
+
+    try {
+      await article.addCategories(articleData.categories);
+    } catch (e) {
+      console.log(`e`, e);
+    }
 
     return !!article;
   }

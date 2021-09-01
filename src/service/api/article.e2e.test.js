@@ -66,11 +66,11 @@ describe(`GET an article`, () => {
 describe(`POST an article`, () => {
   describe(`API creates an article if data is valid`, () => {
     const newArticle = {
-      category: `Котики`,
-      title: `Дам погладить котика`,
+      categories: [1, 2],
+      title: `Дам погладить котика. Дам погладить котика. Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
-      announce: `Гладим котиков`,
-      publicationDate: 1621239403082
+      announce: `Гладим котиков. Гладим котиков. Гладим котиков. Гладим котиков`,
+      publicationDate: `2021-09-01T14:50:15.188Z`
     };
     let app;
     let response;

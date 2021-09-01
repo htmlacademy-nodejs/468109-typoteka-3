@@ -12,7 +12,7 @@ module.exports = async (sequelize, {articles, categories}) => {
   );
 
   const categoryIdByName = categoryModels.reduce((res, category) => ({
-    [category.name]: category,
+    [category.name]: category.id,
     ...res
   }), {});
 

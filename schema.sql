@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS offer_categories;
+DROP TABLE IF EXISTS articles_categories;
 
 CREATE TABLE users(
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
