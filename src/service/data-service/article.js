@@ -15,6 +15,8 @@ class ArticleService {
   async create(articleData) {
     const article = await this._Article.create(articleData);
 
+    // toDo ошибка возникает здесь
+
     try {
       await article.addCategories(articleData.categories);
     } catch (e) {
