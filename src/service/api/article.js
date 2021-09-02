@@ -91,7 +91,7 @@ module.exports = (app, service) => {
       .json(newComment);
   }));
 
-  route.delete(`/:articleId/comments/:commentId`, [routeParamsValidator, articleExists(service), commentExists(service), entityValidator(commentSchema, entityNames.COMMENT)], asyncHandler(async (req, res) => {
+  route.delete(`/:articleId/comments/:commentId`, [routeParamsValidator, articleExists(service), commentExists(service)], asyncHandler(async (req, res) => {
     const {commentId} = req.params;
 
     const deletedComment = await service.dropComment(commentId);

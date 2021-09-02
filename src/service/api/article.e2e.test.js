@@ -22,7 +22,7 @@ const createAPI = async () => {
   return app;
 };
 
-const invalidId = `NOEXST`;
+const invalidId = `123123213`;
 
 describe(`GET list of articles`, () => {
   describe(`API returns a list of all articles`, () => {
@@ -126,11 +126,11 @@ describe(`PUT an article`, () => {
 
   describe(`API changes existent article`, () => {
     const newArticle = {
-      category: `Котики`,
-      title: `Дам погладить котика`,
+      categories: [1, 2, 3],
+      title: `Дам погладить котика. Дам погладить котика. Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
-      announce: `Гладим котиков`,
-      publicationDate: 1621239403082
+      announce: `Гладим котиков. Гладим котиков. Гладим котиков. Гладим котиков`,
+      publicationDate: `2021-09-01T14:50:15.188Z`
     };
 
     let app;
@@ -158,11 +158,11 @@ describe(`PUT an article`, () => {
     const app = await createAPI();
 
     const validArticle = {
-      category: `Котики`,
-      title: `Дам погладить котика`,
+      categories: [1],
+      title: `Дам погладить котика. Дам погладить котика. Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
-      announce: `Гладим котиков`,
-      publicationDate: 1621239403082
+      announce: `Гладим котиков. Гладим котиков. Гладим котиков. Гладим котиков`,
+      publicationDate: `2021-09-01T14:50:15.188Z`
     };
 
     return request(app)
