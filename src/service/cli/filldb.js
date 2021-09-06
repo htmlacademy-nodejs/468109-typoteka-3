@@ -14,6 +14,7 @@ const {
 } = require(`../../utils`);
 
 const {logger} = require(`../lib/logger`);
+const passwordUtils = require(`../lib/password`);
 
 const DEFAULT_COUNT = 1;
 const FILE_SENTENCES_PATH = `src/data/sentences.txt`;
@@ -25,23 +26,44 @@ const MIN_DATE = new Date(MAX_DATE).setMonth(new Date(MAX_DATE).getMonth() - 3);
 const MAX_COMMENTS = 4;
 const MAX_COUNT = 1000;
 
-const generateComments = (count, comments) => (
+const getMockUsers = async () => ([
+  {
+    name: `Иван`,
+    surname: `Иванов`,
+    email: `ivanov@example.com`,
+    passwordHash: await passwordUtils.hash(`ivanov`),
+  },
+  {
+    name: `Пётр`,
+    surname: `Петров`,
+    email: `petrov@example.com`,
+    passwordHash: await passwordUtils.hash(`petrov`),
+  }
+]);
+
+const generateComments = (count, comments, user) => (
   Array(count).fill({}).map(() => ({
     text: shuffle(comments)
       .slice(0, getRandomInt(1, 3))
       .join(` `),
+    user
   }))
 );
 
-const generatePublications = (count, titles, sentences, categories, comments) => {
-  return Array(count).fill({}).map(() => ({
-    title: titles[getRandomInt(0, titles.length - 1)],
-    publicationDate: new Date(getRandomDate(MIN_DATE, MAX_DATE)),
-    announce: shuffle(sentences).slice(0, getRandomInt(1, 3)).join(` `).substr(0, 249),
-    fullText: shuffle(sentences).slice(0, getRandomInt(1, sentences.length)).join(` `).substr(0, 1000),
-    categories: getRandomSubarray(categories),
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
-  }));
+const generatePublications = (count, titles, sentences, categories, comments, users) => {
+  return Array(count).fill({}).map(() => {
+    const user = users[getRandomInt(0, users.length - 1)].email;
+
+    return {
+      title: titles[getRandomInt(0, titles.length - 1)],
+      publicationDate: new Date(getRandomDate(MIN_DATE, MAX_DATE)),
+      announce: shuffle(sentences).slice(0, getRandomInt(1, 3)).join(` `).substr(0, 249),
+      fullText: shuffle(sentences).slice(0, getRandomInt(1, sentences.length)).join(` `).substr(0, 1000),
+      categories: getRandomSubarray(categories),
+      comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, user),
+      user
+    };
+  });
 };
 
 const runFillDb = async (args) => {
@@ -71,9 +93,10 @@ const runFillDb = async (args) => {
     readContent(FILE_COMMENTS_PATH)
   ]);
 
-  const articles = generatePublications(countData, titles, sentences, categories, comments);
+  const mockUsers = await getMockUsers();
+  const articles = generatePublications(countData, titles, sentences, categories, comments, mockUsers);
 
-  return initDb(sequelize, {articles, categories});
+  return initDb(sequelize, {articles, categories, users: mockUsers});
 };
 
 module.exports = {

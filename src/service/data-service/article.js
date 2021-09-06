@@ -8,6 +8,7 @@ class ArticleService {
   constructor(orm) {
     this._Article = orm.models.Article;
     this._Comment = orm.models.Comment;
+    this._User = orm.models.User;
     this._Category = orm.models.Category;
     this._ArticlesCategory = orm.models.ArticlesCategory;
   }
@@ -29,10 +30,31 @@ class ArticleService {
   }
 
   async findAll(needComments) {
-    const include = [Aliases.CATEGORIES];
+    const include = [
+      Aliases.CATEGORIES,
+      {
+        model: this._User,
+        as: Aliases.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ];
 
     if (needComments) {
-      include.push(Aliases.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliases.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Aliases.USER,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
 
     const articles = await this._Article.findAll({include});
@@ -97,10 +119,31 @@ class ArticleService {
   }
 
   async findPage({limit, offset, comments}) {
-    const include = [Aliases.CATEGORIES];
+    const include = [
+      Aliases.CATEGORIES,
+      {
+        model: this._User,
+        as: Aliases.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ];
 
     if (comments) {
-      include.push(Aliases.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliases.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Aliases.USER,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
 
     const {count, rows} = await this._Article.findAndCountAll({

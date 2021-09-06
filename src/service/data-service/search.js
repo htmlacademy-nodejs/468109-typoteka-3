@@ -7,6 +7,7 @@ const Aliases = require(`../constants/aliases`);
 class SearchService {
   constructor(orm) {
     this._Articles = orm.models.Article;
+    this._User = orm.models.User;
   }
 
   async findAll(searchText) {
@@ -16,7 +17,16 @@ class SearchService {
           [Op.substring]: searchText
         }
       },
-      include: [Aliases.CATEGORIES]
+      include: [
+        Aliases.CATEGORIES,
+        {
+          model: this._User,
+          as: Aliases.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ]
     });
 
     return articles.map((article) => article.get());
