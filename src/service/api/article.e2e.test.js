@@ -10,10 +10,11 @@ const initDB = require(`../lib/init-db`);
 const article = require(`./article`);
 const DataService = require(`../data-service/article`);
 const {mockArticles, mockCategories} = require(`../constants/mocks-data`);
+const {getMockUsers} = require(`../utils/get-mock-data`);
 
 const createAPI = async () => {
   const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
-  await initDB(mockDB, {categories: mockCategories, articles: mockArticles});
+  await initDB(mockDB, {categories: mockCategories, articles: mockArticles, users: await getMockUsers()});
 
   const app = express();
 
@@ -66,6 +67,7 @@ describe(`GET an article`, () => {
 describe(`POST an article`, () => {
   describe(`API creates an article if data is valid`, () => {
     const newArticle = {
+      userId: 1,
       categories: [1, 2],
       title: `Дам погладить котика. Дам погладить котика. Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,
@@ -126,6 +128,7 @@ describe(`PUT an article`, () => {
 
   describe(`API changes existent article`, () => {
     const newArticle = {
+      userId: 1,
       categories: [1, 2, 3],
       title: `Дам погладить котика. Дам погладить котика. Дам погладить котика`,
       fullText: `Дам погладить котика. Дорого. Не гербалайф`,

@@ -13,8 +13,9 @@ const {
   getRandomSubarray
 } = require(`../../utils`);
 
+const {getMockUsers} = require(`../utils/get-mock-data`);
+
 const {logger} = require(`../lib/logger`);
-const passwordUtils = require(`../lib/password`);
 
 const DEFAULT_COUNT = 1;
 const FILE_SENTENCES_PATH = `src/data/sentences.txt`;
@@ -25,21 +26,6 @@ const MAX_DATE = Date.now();
 const MIN_DATE = new Date(MAX_DATE).setMonth(new Date(MAX_DATE).getMonth() - 3);
 const MAX_COMMENTS = 4;
 const MAX_COUNT = 1000;
-
-const getMockUsers = async () => ([
-  {
-    name: `Иван`,
-    surname: `Иванов`,
-    email: `ivanov@example.com`,
-    passwordHash: await passwordUtils.hash(`ivanov`),
-  },
-  {
-    name: `Пётр`,
-    surname: `Петров`,
-    email: `petrov@example.com`,
-    passwordHash: await passwordUtils.hash(`petrov`),
-  }
-]);
 
 const generateComments = (count, comments, user) => (
   Array(count).fill({}).map(() => ({
