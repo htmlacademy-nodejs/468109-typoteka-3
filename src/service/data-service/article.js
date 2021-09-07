@@ -66,7 +66,26 @@ class ArticleService {
     return this._Article.findByPk(id, {
       include: [
         Aliases.CATEGORIES,
-        Aliases.COMMENTS
+        {
+          model: this._User,
+          as: Aliases.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        },
+        {
+          model: this._Comment,
+          as: Aliases.COMMENTS,
+          include: [
+            {
+              model: this._User,
+              as: Aliases.USER,
+              attributes: {
+                exclude: [`passwordHash`]
+              }
+            }
+          ]
+        }
       ]}
     );
   }

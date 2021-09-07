@@ -10,7 +10,7 @@ const myRouter = new Router();
 const api = getAPI();
 
 myRouter.get(`/`, asyncHandler(async (req, res) => {
-  const articles = await api.getArticles();
+  const articles = await api.getArticles({});
 
   res.render(`my`, {articles});
 }));
