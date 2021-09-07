@@ -8,7 +8,8 @@ module.exports = (service) => async (req, res, next) => {
   const newUser = req.body;
 
   try {
-    await userSchema.validate(newUser);
+    await userSchema.validateAsync(newUser);
+
     const userByEmail = await service.findByEmail(req.body.email);
 
     if (userByEmail) {
@@ -18,7 +19,7 @@ module.exports = (service) => async (req, res, next) => {
   } catch (err) {
     const {details} = err;
 
-    res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(StatusCodes.BAD_REQUEST).json({
       message: details.map((errorDescription) => ({
         name: errorDescription.context.label,
         text: errorDescription.message
