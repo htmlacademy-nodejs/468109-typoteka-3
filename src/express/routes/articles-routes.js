@@ -43,7 +43,7 @@ articlesRouter.post(`/add`, upload.single(`photo`), asyncHandler(async (req, res
   const articleData = {
     publicationDate: body.date,
     title: body.title,
-    photo: file.filename,
+    photo: file ? file.filename : ``,
     announce: body.announce,
     fullText: body[`full-text`],
     categories: body.category

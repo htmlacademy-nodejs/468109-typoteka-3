@@ -13,8 +13,12 @@ module.exports = (service) => async (req, res, next) => {
     const userByEmail = await service.findByEmail(req.body.email);
 
     if (userByEmail) {
-      return res.status(StatusCodes.BAD_REQUEST)
-        .send(`Email is already in use`);
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: [{
+          name: ``,
+          text: `Email is already in use`
+        }]
+      });
     }
   } catch (err) {
     const {details} = err;

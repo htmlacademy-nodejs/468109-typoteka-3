@@ -4,11 +4,18 @@ const {Router} = require(`express`);
 const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
+const upload = require(`../middlewares/upload`);
 
 const mainRouter = new Router();
 const api = getAPI();
 
 const ARTICLES_PER_PAGE = 8;
+
+const renderSignUp = (req, res, meta = {}) => {
+  const {user, errors} = meta;
+
+  res.render(`sign-up`, {user, errors});
+};
 
 mainRouter.get(`/`, asyncHandler(async (req, res) => {
   let {page = 1} = req.query;
@@ -25,5 +32,37 @@ mainRouter.get(`/`, asyncHandler(async (req, res) => {
 
   res.render(`main`, {articles, categories, comments, page, totalPages});
 }));
+
+mainRouter.get(`/register`, renderSignUp);
+
+mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+
+  const userData = {
+    name: body.name,
+    surname: body.surname,
+    avatar: file ? file.filename : ``,
+    email: body.email,
+    password: body.password,
+    passwordRepeated: body[`repeat-password`]
+  };
+
+  try {
+    await api.createUser(userData);
+    res.redirect(`/login`);
+  } catch (err) {
+    const meta = {
+      errors: err.response.data.message,
+      user: {
+        name: userData.name,
+        surname: userData.surname,
+        avatar: userData.avatar,
+        email: userData.email,
+      }
+    };
+
+    renderSignUp(req, res, meta);
+  }
+});
 
 module.exports = mainRouter;
