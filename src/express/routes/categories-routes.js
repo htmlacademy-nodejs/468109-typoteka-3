@@ -11,8 +11,8 @@ const api = getAPI();
 
 const CATEGORIES_PER_PAGE = 8;
 
-const renderCategories = asyncHandler(async (req, res, meta) => {
-  let {page = 1} = req.query;
+const renderCategories = asyncHandler(async (req, res, meta = {}) => {
+  let {page = 1, referer} = req.query;
   const {errors} = meta;
   const limit = CATEGORIES_PER_PAGE;
   const offset = (page - 1) * CATEGORIES_PER_PAGE;
@@ -21,17 +21,23 @@ const renderCategories = asyncHandler(async (req, res, meta) => {
 
   const totalPages = Math.ceil(count / CATEGORIES_PER_PAGE);
 
-  res.render(`all-categories`, {categories, page, totalPages, errors});
+  res.render(`all-categories`, {categories, page, totalPages, errors, referer});
 });
 
 categoriesRouter.get(`/`, renderCategories);
 
 categoriesRouter.post(`/`, asyncHandler(async (req, res) => {
-  const {body} = req;
+  const {body, query} = req;
+  const {referer} = query;
 
   try {
     await api.addCategory(body);
-    renderCategories(req, res);
+
+    if (referer) {
+      res.redirect(`${referer}`);
+    } else {
+      renderCategories(req, res);
+    }
   } catch (err) {
     renderCategories(req, res, {errors: err.response.data.message});
   }

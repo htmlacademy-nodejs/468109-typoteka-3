@@ -5,15 +5,17 @@ const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
 const upload = require(`../middlewares/upload`);
+const {extractCategories} = require(`../utils/form`);
 
 const articlesRouter = new Router();
 const api = getAPI();
 
-const renderNewPost = (req, res, meta) => {
+const renderNewPost = asyncHandler(async (req, res, meta) => {
   const {errors, article, editMode} = meta;
+  const categories = await api.getCategories({});
 
-  res.render(`new-post`, {article, errors, editMode});
-};
+  res.render(`new-post`, {article, errors, categories, editMode});
+});
 
 const renderPost = asyncHandler(async (req, res, meta = {}) => {
   const {id} = req.params;
@@ -46,7 +48,7 @@ articlesRouter.post(`/add`, upload.single(`photo`), asyncHandler(async (req, res
     photo: file ? file.filename : ``,
     announce: body.announce,
     fullText: body[`full-text`],
-    categories: body.category
+    categories: extractCategories(body)
   };
 
   try {

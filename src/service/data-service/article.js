@@ -86,8 +86,15 @@ class ArticleService {
             }
           ]
         }
-      ]}
-    );
+      ]},
+    ).then((model) => {
+      const article = model.get();
+
+      return {
+        ...article,
+        categories: article.categories.map((category) => category.id)
+      };
+    });
   }
 
   async update(id, article) {

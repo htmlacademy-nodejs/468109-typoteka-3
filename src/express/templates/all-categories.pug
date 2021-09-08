@@ -5,7 +5,7 @@ block content
     section.main-page__category.category
       h1.category__title Категории
       .category__add-form
-        form(action='/categories' method='POST')
+        form(action=`/categories?referer=${referer}` method='POST')
           input#add-form-add-category(type='text' name='name' placeholder='Новая категория')
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
