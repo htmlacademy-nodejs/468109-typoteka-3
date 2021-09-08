@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
+const {HttpMethod} = require(`../constants`);
 
 const categoriesRouter = new Router();
 const api = getAPI();
@@ -33,6 +34,29 @@ categoriesRouter.post(`/`, asyncHandler(async (req, res) => {
     renderCategories(req, res);
   } catch (err) {
     renderCategories(req, res, {errors: err.response.data.message});
+  }
+}));
+
+categoriesRouter.post(`/:id`, asyncHandler(async (req, res) => {
+  const {body, params} = req;
+  const {id} = params;
+  const {action} = body;
+
+  switch (action) {
+    case HttpMethod.DELETE:
+      await api.deleteCategory(id);
+
+      return res.redirect(`/categories`);
+    case HttpMethod.PUT:
+      const updatedCategory = {
+        name: body.name
+      };
+
+      await api.updateCategory(id, updatedCategory);
+
+      return res.redirect(`/categories`);
+    default:
+      return null;
   }
 }));
 

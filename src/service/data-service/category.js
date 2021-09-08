@@ -47,6 +47,18 @@ class CategoryService {
     return this._Categories.findByPk(id);
   }
 
+  async drop(id) {
+    return this._Categories.destroy({
+      where: {id}
+    });
+  }
+
+  async update(id, category) {
+    return this._Categories.update(category, {
+      where: {id}
+    });
+  }
+
   async createCategory(categoryData) {
     return this._Categories.create(categoryData);
   }

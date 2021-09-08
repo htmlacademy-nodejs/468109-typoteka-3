@@ -46,6 +46,13 @@ class API {
     return this._load(`/article/comments/`, {params: {count}});
   }
 
+  createComment(data, id) {
+    return this._load(`/article/${id}/comments`, {
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
   async createArticle(data) {
     return this._load(`/article`, {
       method: HttpMethod.POST,
@@ -60,16 +67,22 @@ class API {
     });
   }
 
-  createComment(data, id) {
-    return this._load(`/article/${id}/comments`, {
+  async addCategory(data) {
+    return this._load(`/category`, {
       method: HttpMethod.POST,
       data
     });
   }
 
-  async addCategory(data) {
-    return this._load(`/category`, {
-      method: HttpMethod.POST,
+  async deleteCategory(id) {
+    return this._load(`/category/${id}`, {
+      method: HttpMethod.DELETE,
+    });
+  }
+
+  async updateCategory(id, data) {
+    return this._load(`/category/${id}`, {
+      method: HttpMethod.PUT,
       data
     });
   }

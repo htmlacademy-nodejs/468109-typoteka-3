@@ -7,6 +7,8 @@ const asyncHandler = require(`express-async-handler`);
 const {entityNames} = require(`../constants/entities`);
 const entityValidator = require(`../middlewares/entity-validator`);
 const categorySchema = require(`../schemas/category`);
+const routeParamsValidator = require(`../middlewares/route-params-validator`);
+const categoryExists = require(`../middlewares/category-exists`);
 
 module.exports = (app, service) => {
   const route = new Router();
@@ -27,11 +29,39 @@ module.exports = (app, service) => {
       .json(categories);
   }));
 
-  route.get(`/:id`, asyncHandler(async (req, res) => {
-    const {id} = req.params;
-    const category = await service.findOne(id);
+  route.get(`/:categoryId`, [routeParamsValidator], asyncHandler(async (req, res) => {
+    const {categoryId} = req.params;
+    const category = await service.findOne(categoryId);
     res.status(StatusCodes.OK)
       .json(category);
+  }));
+
+  route.delete(`/:categoryId`, [routeParamsValidator, categoryExists(service)], asyncHandler(async (req, res) => {
+    const {categoryId} = req.params;
+    const category = await service.drop(categoryId);
+
+    if (!category) {
+      return res.status(StatusCodes.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(StatusCodes.OK)
+      .json(category);
+  }));
+
+  route.put(`/:categoryId`, [routeParamsValidator, categoryExists(service), entityValidator(categorySchema, entityNames.CATEGORY)], asyncHandler(async (req, res) => {
+    const {body, params} = req;
+    const {categoryId} = params;
+
+    const updatedCategory = await service.update(categoryId, body);
+
+    if (!updatedCategory) {
+      return res.status(StatusCodes.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(StatusCodes.OK)
+      .json(updatedCategory);
   }));
 
   route.post(`/`, entityValidator(categorySchema, entityNames.CATEGORY), asyncHandler(async (req, res) => {

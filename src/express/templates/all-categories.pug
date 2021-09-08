@@ -16,11 +16,11 @@ block content
       ul.category__list
         each category, index in categories
           li.category__list-item
-            form(action='#' method='POST')
-              input#modify-form-category-1(type='text' name=`category-${index}` value=category.name)
+            form(action=`/categories/${category.id}` method='POST')
+              input#modify-form-category-1(type='text' name=`name` value=(category.name))
               label(for=`modify-form-category-${index}`)
                 span.visually-hidden Редактировать категорию
-              button.category__button.button.button--category(type='submit') Сохранить
-              button.category__button.button.button--category(type='button') Удалить
+              button.category__button.button.button--category(type='submit' name='action' value='PUT') Сохранить
+              button.category__button.button.button--category(type='submit' name='action' value='DELETE') Удалить
 
       +pagination(page, totalPages, 2, `?`)
