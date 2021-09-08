@@ -43,7 +43,7 @@ block content
                 .new-publication__category-wrapper
                   each category in categories
                     div.new-publication__checkbox.new-publication__checkbox--auto
-                      input(id=`checkbox-auto-${category.id}` type='checkbox' name=`category-${category.id}` checked=((article || {}).categories ? article.categories.indexOf(Number(category.id)) !== -1 : false))
+                      input(id=`checkbox-auto-${category.id}` type='checkbox' name=`category-${category.id}` checked=((article || {}).categories ? article.categoriesIds.indexOf(Number(category.id)) !== -1 : false))
                       label(for=`checkbox-auto-${category.id}`) #{category.name}
                   a.new-publication__form-link.button.button--transparent(href=(editMode ? `/categories?referer=/articles/edit/${article.id}` : `/categories?referer=/articles/add`)) Добавить категорию
                 +validationError(errors, "categories")

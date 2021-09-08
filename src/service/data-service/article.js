@@ -92,7 +92,7 @@ class ArticleService {
 
       return {
         ...article,
-        categories: article.categories.map((category) => category.id)
+        categoriesIds: article.categories.map((category) => category.id)
       };
     });
   }
