@@ -30,8 +30,8 @@ class API {
     return this._load(`/search`, {params: {query}});
   }
 
-  async getCategory(id) {
-    return this._load(`/category/${id}`);
+  async getCategory({id, articles}) {
+    return this._load(`/category/${id}`, {params: {articles}});
   }
 
   async getCategories({count, limit, offset}) {

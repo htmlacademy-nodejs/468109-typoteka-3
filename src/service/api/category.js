@@ -30,8 +30,9 @@ module.exports = (app, service) => {
   }));
 
   route.get(`/:categoryId`, [routeParamsValidator], asyncHandler(async (req, res) => {
+    const {articles} = req.query;
     const {categoryId} = req.params;
-    const category = await service.findOne(categoryId);
+    const category = await service.findOne({id: categoryId, articles});
     res.status(StatusCodes.OK)
       .json(category);
   }));

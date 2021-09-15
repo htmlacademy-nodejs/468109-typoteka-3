@@ -5,6 +5,7 @@ const Aliases = require(`../constants/aliases`);
 
 class CategoryService {
   constructor(orm) {
+    this._Article = orm.models.Article;
     this._Categories = orm.models.Category;
     this._ArticlesCategory = orm.models.ArticlesCategory;
   }
@@ -43,8 +44,18 @@ class CategoryService {
     return {count, categories: rows};
   }
 
-  async findOne(id) {
-    return this._Categories.findByPk(id);
+  async findOne({id, articles}) {
+    let include = [];
+
+    if (articles) {
+      include.push({
+        model: this._Article,
+        as: Aliases.ARTICLES,
+        include: [Aliases.CATEGORIES, Aliases.COMMENTS]
+      });
+    }
+
+    return this._Categories.findByPk(id, {include});
   }
 
   async drop(id) {

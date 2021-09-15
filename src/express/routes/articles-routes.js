@@ -28,13 +28,12 @@ const renderPost = asyncHandler(async (req, res, meta = {}) => {
 articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
   const {id} = req.params;
 
-  const [articles, categories, category] = await Promise.all([
-    api.getArticles({comments: true}),
+  const [category, categories] = await Promise.all([
+    api.getCategory({id, articles: true}),
     api.getCategories(true),
-    api.getCategory(id)
   ]);
 
-  return res.render(`articles-by-category`, {articles, categories, category});
+  return res.render(`articles-by-category`, {categories, category, articles: category.articles});
 }));
 
 articlesRouter.get(`/add`, renderNewPost);
