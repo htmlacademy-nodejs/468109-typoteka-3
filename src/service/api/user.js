@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
+const asyncHandler = require(`express-async-handler`);
 
 const newUserValidator = require(`../middlewares/new-user-validator`);
 const passwordUtils = require(`../lib/password`);
@@ -11,7 +12,7 @@ const route = new Router();
 module.exports = (app, service) => {
   app.use(`/user`, route);
 
-  route.post(`/`, newUserValidator(service), async (req, res) => {
+  route.post(`/`, newUserValidator(service), asyncHandler(async (req, res) => {
     const data = req.body;
 
     data.passwordHash = await passwordUtils.hash(data.password);
@@ -22,5 +23,5 @@ module.exports = (app, service) => {
 
     res.status(StatusCodes.CREATED)
       .json(result);
-  });
+  }));
 };

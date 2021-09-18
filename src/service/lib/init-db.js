@@ -11,7 +11,7 @@ module.exports = async (sequelize, {articles, categories, users}) => {
       categories.map((item) => ({name: item}))
   );
 
-  let userModels = await User.bulkCreate(users, {include: [Aliases.ARTICLES, Aliases.COMMENTS]});
+  const userModels = await User.bulkCreate(users, {include: [Aliases.ARTICLES, Aliases.COMMENTS]});
 
   const categoryIdByName = categoryModels.reduce((res, category) => ({
     [category.name]: category.id,

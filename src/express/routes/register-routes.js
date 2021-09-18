@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const asyncHandler = require(`express-async-handler`);
 
 const upload = require(`../middlewares/upload`);
 const {getAPI} = require(`../api`);
@@ -16,7 +17,7 @@ const renderSignUp = (req, res, meta = {}) => {
 
 registerRouter.get(`/`, renderSignUp);
 
-registerRouter.post(`/`, upload.single(`avatar`), async (req, res) => {
+registerRouter.post(`/`, upload.single(`avatar`), asyncHandler(async (req, res) => {
   const {body, file} = req;
 
   const userData = {
@@ -44,6 +45,6 @@ registerRouter.post(`/`, upload.single(`avatar`), async (req, res) => {
 
     renderSignUp(req, res, meta);
   }
-});
+}));
 
 module.exports = registerRouter;

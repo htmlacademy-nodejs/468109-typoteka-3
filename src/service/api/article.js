@@ -17,7 +17,7 @@ module.exports = (app, service) => {
 
   app.use(`/article`, route);
 
-  route.get(`/`, async (req, res) => {
+  route.get(`/`, asyncHandler(async (req, res) => {
     const {comments, offset, limit} = req.query;
     let articles;
 
@@ -29,7 +29,7 @@ module.exports = (app, service) => {
 
     return res.status(StatusCodes.OK)
       .json(articles);
-  });
+  }));
 
   route.post(`/`, entityValidator(articleSchema, entityNames.ARTICLE), asyncHandler(async (req, res) => {
     const isCreated = await service.create(req.body);
