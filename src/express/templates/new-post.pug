@@ -11,6 +11,7 @@ block content
       .popup.popup--new-publication.popup--anti
         .new-publication
           form(action=`${editMode ? `/articles/edit/${article.id}` : '/articles/add'}` method='POST' enctype='multipart/form-data')
+            input(type="hidden" name="_csrf" value=csrfToken)
             .new-publication__header
               h1= editMode ? `Редактировать публикацию` : `Новая публикация`
               .new-publication__date-form
@@ -34,7 +35,7 @@ block content
                   +validationError(errors, "title")
                 .form__field.form__field--post-image
                   label
-                    input#image-name-field(type='text' name='photo-name' placeholder='Фотография' readonly='')
+                    input#image-name-field(type='text' name='photo-name' placeholder='Фотография' readonly='' value=(article || {}).photo || '')
                   .form__image-loader.form__image-loader--publication
                     label
                       input#photo.visually-hidden(type='file' name='photo')
@@ -43,7 +44,7 @@ block content
                 .new-publication__category-wrapper
                   each category in categories
                     div.new-publication__checkbox.new-publication__checkbox--auto
-                      input(id=`checkbox-auto-${category.id}` type='checkbox' name=`category-${category.id}` checked=((article || {}).categories ? article.categoriesIds.indexOf(Number(category.id)) !== -1 : false))
+                      input(id=`checkbox-auto-${category.id}` type='checkbox' name=`category-${category.id}` checked=((article || {}).categoriesIds ? article.categoriesIds.some((id) => id == category.id) : false))
                       label(for=`checkbox-auto-${category.id}`) #{category.name}
                   a.new-publication__form-link.button.button--transparent(href=(editMode ? `/categories?referer=/articles/edit/${article.id}` : `/categories?referer=/articles/add`)) Добавить категорию
                 +validationError(errors, "categories")

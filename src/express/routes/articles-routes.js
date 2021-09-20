@@ -2,30 +2,36 @@
 
 const {Router} = require(`express`);
 const asyncHandler = require(`express-async-handler`);
+const csrf = require(`csurf`);
 
 const {getAPI} = require(`../api`);
 const upload = require(`../middlewares/upload`);
+const auth = require(`../middlewares/auth`);
 const {extractCategories} = require(`../utils/form`);
 
 const articlesRouter = new Router();
 const api = getAPI();
+const csrfProtection = csrf();
 
 const renderNewPost = asyncHandler(async (req, res, meta) => {
+  const {user} = req.session;
   const {errors, article, editMode} = meta;
   const categories = await api.getCategories({});
 
-  res.render(`new-post`, {article, errors, categories, editMode});
+  res.render(`new-post`, {article, errors, categories, editMode, user, csrfToken: req.csrfToken()});
 });
 
 const renderPost = asyncHandler(async (req, res, meta = {}) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {errors} = meta;
   const article = await api.getArticle(id);
 
-  res.render(`post`, {article, errors});
+  res.render(`post`, {article, errors, user, csrfToken: req.csrfToken()});
 });
 
 articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
 
   const [category, categories] = await Promise.all([
@@ -33,21 +39,25 @@ articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
     api.getCategories(true),
   ]);
 
-  return res.render(`articles-by-category`, {categories, category, articles: category.articles});
+  return res.render(`articles-by-category`, {categories, category, articles: category.articles, user});
 }));
 
-articlesRouter.get(`/add`, renderNewPost);
+articlesRouter.get(`/add`, [auth(true), csrfProtection], renderNewPost);
 
-articlesRouter.post(`/add`, upload.single(`photo`), asyncHandler(async (req, res) => {
+articlesRouter.post(`/add`, [auth(true), upload.single(`photo`), csrfProtection], asyncHandler(async (req, res) => {
+  const {user} = req.session;
   const {body, file} = req;
+
+  const categoriesIds = extractCategories(body);
 
   const articleData = {
     publicationDate: body.date,
     title: body.title,
-    photo: file ? file.filename : ``,
+    photo: file ? file.filename : body.photo,
     announce: body.announce,
     fullText: body[`full-text`],
-    categories: extractCategories(body)
+    categories: categoriesIds,
+    userId: user.id
   };
 
   try {
@@ -55,7 +65,7 @@ articlesRouter.post(`/add`, upload.single(`photo`), asyncHandler(async (req, res
     res.redirect(`/my`);
   } catch (err) {
     const meta = {
-      article: articleData,
+      article: {...articleData, categoriesIds},
       errors: err.response.data.message
     };
 
@@ -63,7 +73,7 @@ articlesRouter.post(`/add`, upload.single(`photo`), asyncHandler(async (req, res
   }
 }));
 
-articlesRouter.get(`/edit/:id`, asyncHandler(async (req, res) => {
+articlesRouter.get(`/edit/:id`, auth(true), asyncHandler(async (req, res) => {
   const {id} = req.params;
 
   const meta = {
@@ -74,20 +84,26 @@ articlesRouter.get(`/edit/:id`, asyncHandler(async (req, res) => {
   renderNewPost(req, res, meta);
 }));
 
-articlesRouter.post(`/edit/:id`, asyncHandler(async (req, res) => {
-  const {body} = req;
+articlesRouter.post(`/edit/:id`, [auth(true), upload.single(`photo`), csrfProtection], asyncHandler(async (req, res) => {
+  const {user} = req.session;
+  const {body, file} = req;
+
+  const categoriesIds = extractCategories(body);
+
   const articleData = {
     publicationDate: body.date,
     title: body.title,
+    photo: file ? file.filename : body.photo,
     announce: body.announce,
     fullText: body[`full-text`],
-    categories: body.category
+    categories: categoriesIds,
+    userId: user.id
+
   };
   const {id} = req.params;
 
   try {
     await api.updateArticle(articleData, id);
-
     res.redirect(`/my`);
   } catch (err) {
 
@@ -95,7 +111,8 @@ articlesRouter.post(`/edit/:id`, asyncHandler(async (req, res) => {
       errors: err.response.data.message,
       article: {
         id,
-        ...articleData
+        ...articleData,
+        categoriesIds
       },
       editMode: true
     };
@@ -104,14 +121,16 @@ articlesRouter.post(`/edit/:id`, asyncHandler(async (req, res) => {
   }
 }));
 
-articlesRouter.get(`/:id`, renderPost);
+articlesRouter.get(`/:id`, csrfProtection, renderPost);
 
-articlesRouter.post(`/:id/comments`, asyncHandler(async (req, res) => {
+articlesRouter.post(`/:id/comments`, [auth(true), csrfProtection], asyncHandler(async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {message} = req.body;
 
   const newComment = {
-    text: message
+    text: message,
+    userId: user.id
   };
 
   try {

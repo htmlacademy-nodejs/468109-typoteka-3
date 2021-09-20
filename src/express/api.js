@@ -22,6 +22,10 @@ class API {
     return this._load(`/article`, {params: {comments, offset, limit}});
   }
 
+  getMostPopularArticles(count) {
+    return this._load(`/article/most-popular`, {params: {count}});
+  }
+
   getArticle(id) {
     return this._load(`/article/${id}`);
   }
@@ -38,8 +42,12 @@ class API {
     return this._load(`/category`, {params: {count, limit, offset}});
   }
 
-  async getComments(id) {
-    return this._load(`/article/${id}/comments`);
+  async getUsedCategories() {
+    return this._load(`/category/used`);
+  }
+
+  async getAllComments() {
+    return this._load(`/article/all-comments`);
   }
 
   async getLastComments(count) {
@@ -91,6 +99,13 @@ class API {
     return this._load(`/user`, {
       method: HttpMethod.POST,
       data
+    });
+  }
+
+  auth(email, password) {
+    return this._load(`/user/auth`, {
+      method: HttpMethod.POST,
+      data: {email, password}
     });
   }
 }

@@ -29,6 +29,13 @@ module.exports = (app, service) => {
       .json(categories);
   }));
 
+  route.get(`/used`, asyncHandler(async (req, res) => {
+    const categories = await service.findUsedCategories();
+
+    res.status(StatusCodes.OK)
+      .json(categories);
+  }));
+
   route.get(`/:categoryId`, [routeParamsValidator], asyncHandler(async (req, res) => {
     const {articles} = req.query;
     const {categoryId} = req.params;

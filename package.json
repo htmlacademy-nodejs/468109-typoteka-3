@@ -23,7 +23,7 @@
     "fill--3": "cross-env NODE_ENV=development node ./src/service/service.js --fill 5",
     "server": "cross-env NODE_ENV=production nodemon -r dotenv/config ./src/service/service.js --server 3000",
     "server::debug": "cross-env NODE_ENV=development nodemon -r dotenv/config ./src/service/service.js --server 3000",
-    "start-front-server": "nodemon ./src/express/index.js"
+    "start-front-server": "nodemon -r dotenv/config ./src/express/index.js"
   },
   "devDependencies": {
     "eslint": "7.18.0",
@@ -38,10 +38,13 @@
     "axios": "0.21.1",
     "bcrypt": "5.0.1",
     "chalk": "4.1.0",
+    "connect-session-sequelize": "7.1.2",
     "cross-env": "7.0.3",
+    "csurf": "1.11.0",
     "dotenv": "10.0.0",
     "express": "4.17.1",
     "express-async-handler": "1.1.4",
+    "express-session": "1.17.2",
     "http-status-codes": "2.1.4",
     "joi": "17.4.2",
     "multer": "1.4.3",

@@ -10,9 +10,10 @@ const registerRouter = new Router();
 const api = getAPI();
 
 const renderSignUp = (req, res, meta = {}) => {
-  const {user, errors} = meta;
+  const {user} = req.session;
+  const {formData, errors} = meta;
 
-  res.render(`sign-up`, {user, errors});
+  res.render(`sign-up`, {formData, errors, user});
 };
 
 registerRouter.get(`/`, renderSignUp);
@@ -35,7 +36,7 @@ registerRouter.post(`/`, upload.single(`avatar`), asyncHandler(async (req, res) 
   } catch (err) {
     const meta = {
       errors: err.response.data.message,
-      user: {
+      formData: {
         name: userData.name,
         surname: userData.surname,
         avatar: userData.avatar,

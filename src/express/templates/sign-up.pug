@@ -13,13 +13,13 @@ block content
                     form(action='/register' method='POST' enctype='multipart/form-data')
                         .form__field
                             label
-                                input(type='email' name='email' value=(user ? user.email : '') placeholder='Электронная почта' required='')
+                                input(type='email' name='email' value=(formData ? formData.email : '') placeholder='Электронная почта' required='')
                         .form__field
                             label
-                                input(type='text' name='name' value=(user ? user.name : '') placeholder='Имя' required='')
+                                input(type='text' name='name' value=(formData ? formData.name : '') placeholder='Имя' required='')
                         .form__field
                             label
-                                input(type='text' name='surname' value=(user ? user.surname : '') placeholder='Фамилия')
+                                input(type='text' name='surname' value=(formData ? formData.surname : '') placeholder='Фамилия')
                         .form__field
                             label
                                 input(type='password' name='password' placeholder='Пароль' required='')
@@ -29,8 +29,8 @@ block content
                         +validationErrors(errors, "При создании пользователя произошли ошибки:")
                         .form__image-loader
                             a.form__avatar.avatar
-                                img(src=(user && user.avatar ? `/img/${user.avatar}` : `/img/icons/smile.svg`) alt='аватар пользователя')
+                                img(src=(formData && formData.avatar ? `/img/${formData.avatar}` : `/img/icons/smile.svg`) alt='аватар пользователя')
                             label
-                                input.visually-hidden(type='file' name='avatar' value=(user ? user.avatar : ''))
+                                input.visually-hidden(type='file' name='avatar' value=(formData ? formData.avatar : ''))
                                 | Загрузить фото профиля
                         button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться

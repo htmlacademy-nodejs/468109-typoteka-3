@@ -13,40 +13,54 @@ block content
         h2.visually-hidden Основное содержание
         .post__wrapper
           .post__head
-            a.post__backwards.button.button--backwards(href='#') Назад
+            a.post__backwards.button.button--backwards(href='/my') Назад
             time.post__date(datetime=article.createdDate) #{article.createdDate}
             h2.post__title.title.title--main #{article.title}
             ul.post__themes.themes
               each category in article.categories
                 li.themes__item
-                  a.themes__item-link(href='#')
+                  a.themes__item-link(href=`/articles/category/${category.id}`)
                     | #{category.name}
                     sup #{category.count}
                   button.themes__remove-btn(type='button') Удалить категорию
           .post__picture
-            img(src='/img/sea-fullsize@1x.jpg' alt='пейзаж море, скалы, пляж')
+            img(src=`/img/${article.photo || 'sea-fullsize@1x.jpg'}` alt='пейзаж море, скалы, пляж')
           .post__text
             h3 #{article.title}
             p #{article.fullText}
       .post__wrapper.post__wrapper--comments
         section.post__comments.comments
-          h2.comments__title.title.title--middle Комментарии
-          ul.comments__list
-            each comment in article.comments
-              li.comments__comment
+          if (user)
+            h2.comments__title.title.title--middle #{article.comments && article.comments.length > 0 ? 'Комментарии' : 'Комментарии отсутствуют'}
+            if (article.comments && article.comments.length > 0)
+              ul.comments__list
+                each comment in article.comments
+                  li.comments__comment
+                    .comments__avatar.avatar
+                      if (comment.users.avatar)
+                        img(src=(`/img/${comment.users.avatar}`) alt='аватар пользователя')
+                    .comments__text
+                      .comments__head
+                        p #{`${comment.users.surname} ${comment.users.name}`} •
+                        time.comments__date(datetime=comment.createdAt) #{formatDate(comment.createdAt)}
+                      p.comments__message #{comment.text}
+          div(class=`comments__footer comments__footer--${user ? 'user' : 'visitor'}`)
+            if (user)
+              form(action=`/articles/${article.id}/comments` method='POST')
+                input(type="hidden" name="_csrf" value=csrfToken)
                 .comments__avatar.avatar
-                  img(src=(comment.users.avatar ? `/img/${comment.users.avatar}` : '/img/avatar-1.png') alt='аватар пользователя')
-                .comments__text
-                  .comments__head
-                    p #{`${comment.users.surname} ${comment.users.name}`} •
-                    time.comments__date(datetime=comment.createdAt) #{formatDate(comment.createdAt)}
-                  p.comments__message #{comment.text}
-          .comments__footer.comments__footer--user
-            form(action=`/articles/${article.id}/comments` method='POST')
-              .comments__avatar.avatar
-                img(src=(article.users.avatar ? `/img/${article.users.avatar}` : '/img/avatar-2.png') alt='аватар пользователя')
-              label
-                textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
-              button.comments__button.button.button--colored(type='submit') Опубликовать
+                  if (user.avatar)
+                    img(src=(`/img/${user.avatar}`) alt='аватар пользователя')
+                label
+                  textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
+                button.comments__button.button.button--colored(type='submit') Опубликовать
 
-            +validationErrors(errors, "При добавлении комментария произошли ошибки:")
+              +validationErrors(errors, "При добавлении комментария произошли ошибки:")
+            else
+              button.comments__button.button.button--colored(type='submit')
+                a(href='/login') Войти
+              .comments__registration
+                p.text.text--signature
+                  b.title.title--small Регистрация
+                  | Чтобы присоединиться к переписке нужно зарегистрироваться
+

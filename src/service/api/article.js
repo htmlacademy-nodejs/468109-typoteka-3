@@ -38,10 +38,26 @@ module.exports = (app, service) => {
       .json(isCreated);
   }));
 
+  route.get(`/most-popular`, asyncHandler(async (req, res) => {
+    const {count} = req.query;
+
+    const articles = await service.findMostPopular(count);
+
+    return res.status(StatusCodes.OK)
+      .json(articles);
+  }));
+
   route.get(`/comments`, asyncHandler(async (req, res) => {
     const {count} = req.query;
 
     const comments = await service.findLastComments(count);
+
+    return res.status(StatusCodes.OK)
+      .json(comments);
+  }));
+
+  route.get(`/all-comments`, asyncHandler(async (req, res) => {
+    const comments = await service.findAllComments();
 
     return res.status(StatusCodes.OK)
       .json(comments);
@@ -76,7 +92,7 @@ module.exports = (app, service) => {
   route.get(`/:articleId/comments`, [routeParamsValidator, articleExists(service)], asyncHandler(async (req, res) => {
     const {articleId} = req.params;
 
-    const comments = await service.findAllComments(articleId);
+    const comments = await service.findCommentsById(articleId);
 
     return res.status(StatusCodes.OK)
       .json(comments);

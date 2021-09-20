@@ -5,6 +5,7 @@ const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
 const {HttpMethod} = require(`../constants`);
+const auth = require(`../middlewares/auth`);
 
 const categoriesRouter = new Router();
 const api = getAPI();
@@ -12,6 +13,7 @@ const api = getAPI();
 const CATEGORIES_PER_PAGE = 8;
 
 const renderCategories = asyncHandler(async (req, res, meta = {}) => {
+  const {user} = req.session;
   let {page = 1, referer} = req.query;
   const {errors} = meta;
   const limit = CATEGORIES_PER_PAGE;
@@ -21,12 +23,12 @@ const renderCategories = asyncHandler(async (req, res, meta = {}) => {
 
   const totalPages = Math.ceil(count / CATEGORIES_PER_PAGE);
 
-  res.render(`all-categories`, {categories, page, totalPages, errors, referer});
+  res.render(`all-categories`, {categories, page, totalPages, errors, referer, user});
 });
 
-categoriesRouter.get(`/`, renderCategories);
+categoriesRouter.get(`/`, auth(true), renderCategories);
 
-categoriesRouter.post(`/`, asyncHandler(async (req, res) => {
+categoriesRouter.post(`/`, auth(true), asyncHandler(async (req, res) => {
   const {body, query} = req;
   const {referer} = query;
 
@@ -43,7 +45,7 @@ categoriesRouter.post(`/`, asyncHandler(async (req, res) => {
   }
 }));
 
-categoriesRouter.post(`/:id`, asyncHandler(async (req, res) => {
+categoriesRouter.post(`/:id`, auth(true), asyncHandler(async (req, res) => {
   const {body, params} = req;
   const {id} = params;
   const {action} = body;

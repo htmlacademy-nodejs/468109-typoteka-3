@@ -25,14 +25,14 @@ const MAX_COUNT = 1000;
 const defaultUsers = [
   {
     email: `ivanov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
+    passwordHash: `$2b$10$Tzs88P0X4y2WAWHNY6UD8.dqVwxvy.yhs19xCdIF1tYnDpThgJbAq`,
     firstName: `Иван`,
     lastName: `Иванов`,
     avatar: `avatar1.jpg`
   },
   {
     email: `petrov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
+    passwordHash: `$2b$10$Tzs88P0X4y2WAWHNY6UD8.dqVwxvy.yhs19xCdIF1tYnDpThgJbAq`,
     firstName: `Пётр`,
     lastName: `Петров`,
     avatar: `avatar2.jpg`

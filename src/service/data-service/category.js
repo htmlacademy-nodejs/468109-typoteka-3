@@ -1,6 +1,8 @@
 'use strict';
 
 const Sequelize = require(`sequelize`);
+const {Op} = require(`sequelize`);
+
 const Aliases = require(`../constants/aliases`);
 
 class CategoryService {
@@ -42,6 +44,36 @@ class CategoryService {
       distinct: true
     });
     return {count, categories: rows};
+  }
+
+  async findUsedCategories() {
+    const categories = await this._Categories.findAll({
+      attributes: [
+        `id`,
+        `name`,
+        [
+          Sequelize.fn(`COUNT`, Sequelize.col(`CategoryId`)),
+          `count`
+        ]
+      ],
+      group: [Sequelize.col(`Category.id`)],
+      having: Sequelize.where(
+          Sequelize.fn(
+              `COUNT`,
+              Sequelize.col(`CategoryId`)
+          ),
+          {
+            [Op.gte]: 1
+          }
+      ),
+      include: [{
+        model: this._ArticlesCategory,
+        as: Aliases.ARTICLES_CATEGORIES,
+        attributes: []
+      }]
+    });
+
+    return categories.map((category) => category.get());
   }
 
   async findOne({id, articles}) {

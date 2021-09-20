@@ -1,51 +1,41 @@
 extends layout.pug
 
 block content
-    main.main-page
-        h1.visually-hidden Главная страница личного блога Типотека
-        p
-            | Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
+  main.main-page
+    h1.visually-hidden Главная страница личного блога Типотека
+    p
+      | Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
 
-        include partials/themes-list
+    include partials/themes-list
 
-        .main-page__section-flex
-            section.main-page__hot.hot
-                h2.hot__name
-                    | Самое обсуждаемое
-                    span.hot__icon.hot__icon--fire
-                ul.hot__list
-                    li.hot__list-item
-                        a.hot__list-link(href='#')
-                            | Билл Гейтс впервые за два года возглавил рейтинг самых богатых людей
-                            | мира по версии Bloomberg
-                            sup.hot__link-sup 12
-                    li.hot__list-item
-                        a.hot__list-link(href='#')
-                            | Сервис для аналитики Telegram-чатов Combot попал под блокировку из-за
-                            | информации на служебной
-                            sup.hot__link-sup 15
-                            |  странице
-                    li.hot__list-item.hot__list-item--margin
-                        a.hot__list-link(href='#')
-                            | Модель Кайли Дженнер продаст 51% своей компании Kylie Cosmetics
-                            | владельцу Factor за $600 млн
-                            sup.hot__link-sup 52
-                    li.hot__list-item.hot__list-item--end
-                        a.hot__list-link(href='#')
-                            | Tesla получила 146 тысяч предзаказов на электрический пикап Cybertruck
-                            | за двое суток
-                            sup.hot__link-sup 153
-            section.main-page__last.last
-                h2.last__name
-                    | Последние комментарии
-                    span.last__icon.last__icon--cloud
-                ul.last__list
-                    each comment in comments
-                        li.last__list-item
-                            img.last__list-image(src='img/avatar-small-1.png' width='20' height='20' alt='Аватар пользователя')
-                            b.last__list-name Анна Артамонова
-                            a.last__list-link(href='#') #{comment.text}
+    .main-page__section-flex
+      section.main-page__hot.hot
+        h2.hot__name
+          | Самое обсуждаемое
+          span.hot__icon.hot__icon--fire
+        if (comments && comments.length > 0)
+          ul.hot__list
+            each mostPopularArticle in mostPopularArticles
+              li.hot__list-item
+                a.hot__list-link(href=`/articles/${mostPopularArticle.id}`)
+                  | #{mostPopularArticle.announce}
+                  sup.hot__link-sup #{mostPopularArticle.comments_count}
+        else
+          p.hot__empty Здесь пока ничего нет...
+      section.main-page__last.last
+        h2.last__name
+          | Последние комментарии
+          span.last__icon.last__icon--cloud
+        if (comments && comments.length > 0)
+          ul.last__list
+            each comment in comments
+              li.last__list-item
+                img.last__list-image(src=`img/${comment.users.avatar || 'avatar-small-1.png'}` width='20' height='20' alt='Аватар пользователя')
+                b.last__list-name #{`${comment.users.name} ${comment.users.surname}`}
+                a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
+        else
+          p.hot__empty Здесь пока ничего нет...
 
-        include partials/posts-preview-list
+    include partials/posts-preview-list
 
-        +pagination(page, totalPages, 2, `?`)
+    +pagination(page, totalPages, 2, `?`)
