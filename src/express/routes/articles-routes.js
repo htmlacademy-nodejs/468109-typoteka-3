@@ -73,7 +73,7 @@ articlesRouter.post(`/add`, [auth(true), upload.single(`photo`), csrfProtection]
   }
 }));
 
-articlesRouter.get(`/edit/:id`, auth(true), asyncHandler(async (req, res) => {
+articlesRouter.get(`/edit/:id`, [auth(true), csrfProtection], asyncHandler(async (req, res) => {
   const {id} = req.params;
 
   const meta = {

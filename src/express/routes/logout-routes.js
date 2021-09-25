@@ -5,7 +5,7 @@ const {Router} = require(`express`);
 const logoutRouter = new Router();
 
 logoutRouter.get(`/`, (req, res) => {
-  delete req.session.user;
+  req.session.destroy();
   res.redirect(`/`);
 });
 

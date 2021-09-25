@@ -63,8 +63,8 @@ class ArticleService {
     return articles.map((article) => article.get());
   }
 
-  findOne(id) {
-    return this._Article.findByPk(id, {
+  async findOne(id) {
+    const articleModel = await this._Article.findByPk(id, {
       include: [
         Aliases.CATEGORIES,
         {
@@ -88,18 +88,18 @@ class ArticleService {
           ]
         }
       ]},
-    ).then((model) => {
-      if (!model) {
-        return model;
-      }
+    );
 
-      const article = model.get();
+    if (!articleModel) {
+      return null;
+    }
 
-      return {
-        ...article,
-        categoriesIds: article.categories.map((category) => category.id)
-      };
-    });
+    const article = articleModel.get();
+
+    return {
+      ...article,
+      categoriesIds: article.categories.map((category) => category.id)
+    };
   }
 
   async findMostPopular(count) {
