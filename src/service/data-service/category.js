@@ -39,11 +39,27 @@ class CategoryService {
 
   async findPage({limit, offset}) {
     const {count, rows} = await this._Categories.findAndCountAll({
+      attributes: [
+        `id`,
+        `name`,
+        [
+          Sequelize.fn(`COUNT`, Sequelize.col(`CategoryId`)),
+          `count`
+        ]
+      ],
       limit,
       offset,
+      group: [Sequelize.col(`Category.id`)],
+      include: [{
+        model: this._ArticlesCategory,
+        as: Aliases.ARTICLES_CATEGORIES,
+        attributes: []
+      }],
+      subQuery: false,
       distinct: true
     });
-    return {count, categories: rows};
+
+    return {count: count.length, categories: rows};
   }
 
   async findUsedCategories() {

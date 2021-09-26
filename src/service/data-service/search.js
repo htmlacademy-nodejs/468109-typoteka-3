@@ -17,6 +17,9 @@ class SearchService {
           [Op.substring]: searchText
         }
       },
+      order: [
+        [`createdAt`, `DESC`]
+      ],
       include: [
         Aliases.CATEGORIES,
         {

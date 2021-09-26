@@ -13,7 +13,7 @@ block content
         h2.hot__name
           | Самое обсуждаемое
           span.hot__icon.hot__icon--fire
-        if (comments && comments.length > 0)
+        if (mostPopularArticles && mostPopularArticles.length > 0)
           ul.hot__list
             each mostPopularArticle in mostPopularArticles
               li.hot__list-item
@@ -30,7 +30,8 @@ block content
           ul.last__list
             each comment in comments
               li.last__list-item
-                img.last__list-image(src=`img/${comment.users.avatar || 'avatar-small-1.png'}` width='20' height='20' alt='Аватар пользователя')
+                if (comment.users.avatar)
+                  img.last__list-image(src=`img/${comment.users.avatar || 'avatar-small-1.png'}` width='20' height='20' alt='Аватар пользователя')
                 b.last__list-name #{`${comment.users.name} ${comment.users.surname}`}
                 a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
         else

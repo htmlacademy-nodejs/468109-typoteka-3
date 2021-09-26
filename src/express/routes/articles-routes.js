@@ -36,7 +36,7 @@ articlesRouter.get(`/category/:id`, asyncHandler(async (req, res) => {
 
   const [category, categories] = await Promise.all([
     api.getCategory({id, articles: true}),
-    api.getCategories(true),
+    api.getUsedCategories(),
   ]);
 
   return res.render(`articles-by-category`, {categories, category, articles: category.articles, user});
@@ -70,6 +70,18 @@ articlesRouter.post(`/add`, [auth(true), upload.single(`photo`), csrfProtection]
     };
 
     renderNewPost(req, res, meta);
+  }
+}));
+
+articlesRouter.post(`/delete/:id`, [auth(true)], asyncHandler(async (req, res) => {
+  const {id} = req.params;
+
+  try {
+    await api.deleteArticle(id);
+
+    res.redirect(`/my`);
+  } catch (err) {
+    res.redirect(`/500`);
   }
 }));
 
@@ -123,7 +135,7 @@ articlesRouter.post(`/edit/:id`, [auth(true), upload.single(`photo`), csrfProtec
 
 articlesRouter.get(`/:id`, csrfProtection, renderPost);
 
-articlesRouter.post(`/:id/comments`, [auth(true), csrfProtection], asyncHandler(async (req, res) => {
+articlesRouter.post(`/:id/comments`, [auth(), csrfProtection], asyncHandler(async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
   const {message} = req.body;
@@ -143,6 +155,18 @@ articlesRouter.post(`/:id/comments`, [auth(true), csrfProtection], asyncHandler(
     };
 
     renderPost(req, res, meta);
+  }
+}));
+
+articlesRouter.post(`/:articleId/comments/delete/:commentId`, [auth(true)], asyncHandler(async (req, res) => {
+  const {articleId, commentId} = req.params;
+
+  try {
+    await api.deleteComment(articleId, commentId);
+
+    res.redirect(`/my/comments`);
+  } catch (err) {
+    res.redirect(`/500`);
   }
 }));
 

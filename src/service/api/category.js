@@ -46,15 +46,16 @@ module.exports = (app, service) => {
 
   route.delete(`/:categoryId`, [routeParamsValidator, categoryExists(service)], asyncHandler(async (req, res) => {
     const {categoryId} = req.params;
-    const category = await service.drop(categoryId);
 
-    if (!category) {
+    const deletedCategory = await service.drop(categoryId);
+
+    if (!deletedCategory) {
       return res.status(StatusCodes.NOT_FOUND)
         .send(`Not found`);
     }
 
     return res.status(StatusCodes.OK)
-      .json(category);
+      .json(deletedCategory);
   }));
 
   route.put(`/:categoryId`, [routeParamsValidator, categoryExists(service), entityValidator(categorySchema, entityNames.CATEGORY)], asyncHandler(async (req, res) => {

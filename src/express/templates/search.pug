@@ -1,15 +1,20 @@
 extends layout.pug
 
 block content
-    main
-        section.search-page
-            .search-page__wrapper
-                h1 Поиск
-                .search.search-page__form
-                    form(action='/search' method='get')
-                        label
-                            input(type='text' name='search' placeholder='Что ищем?')
-                        button.search__button.button.button--transparent(type='submit') Найти
-                    ul.search__results-list
-                        each result in results
-                            li.search__result #{result.title}
+  main
+    section.search-page
+      div(class=(`search-page__wrapper ${results && results.length > 0 ? `` : `search-page__wrapper--empty`}`))
+        h1 Поиск
+        .search.search-page__form
+          form(action='/search' method='get')
+            label
+              input(type='text' name='search' placeholder='Что ищем?')
+            button.search__button.button.button--transparent(type='submit') Найти
+          if (results && results.length > 0)
+            each result in results
+              div.search__result
+                +formatDate('search__date', result.createdAt)
+                a.search__link(href=(`/articles/${result.id}`)) #{result.title}
+          else
+            p.search-page__empty Ничего не нашлось
+

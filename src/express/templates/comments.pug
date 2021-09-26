@@ -1,11 +1,6 @@
 extends layout.pug
 
 block content
-  -
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return date.toLocaleString(`ru-RU`, {hour12: false});
-    }
   main.main-page.main-page--padding
     section.main-page__publication.publication
       h1.publication__title Комментарии
@@ -13,10 +8,12 @@ block content
         each comment in comments
           li.publication__list-item
             .publication__header
-              img.publication__list-image(src=(comment.users.avatar ? `/img/${comment.users.avatar}` : '/img/avatar-small-2.png') width='20' height='20' alt='Аватар пользователя')
+              if (comment.users.avatar)
+                img.publication__list-image(src=(`/img/${comment.users.avatar}`) width='20' height='20' alt='Аватар пользователя')
               b.publication__list-name #{`${comment.users.surname} ${comment.users.name}`}
-              time.publication__item-time(datetime='#{formatDate(comment.createdAt)}') #{formatDate(comment.createdAt)}
-            a.publication__item-text(href='#') #{comment.announce}
+              +formatDate('publication__item-time', comment.createdAt)
+            a.publication__item-text(href=`/articles/${comment.articleId}`) #{comment.Article.title}
             p.publication__text-strong #{comment.text}
-            button.publication__button.button.button--close-item(type='button')
-              span.visually-hidden Закрыть строку списка
+            form(action=`/articles/${comment.articleId}/comments/delete/${comment.id}` method='POST')
+              button.publication__button.button.button--close-item(type='submit')
+                span.visually-hidden Закрыть строку списка

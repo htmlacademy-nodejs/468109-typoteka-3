@@ -3,6 +3,10 @@
 const axios = require(`axios`);
 
 const {HttpMethod} = require(`./constants`);
+const {
+  formatMostPopularArticlesToClient,
+  formatLastCommentsToClient
+} = require(`./utils/formatters`);
 
 class API {
   constructor(baseURL, timeout) {
@@ -22,8 +26,10 @@ class API {
     return this._load(`/article`, {params: {comments, offset, limit}});
   }
 
-  getMostPopularArticles(count) {
-    return this._load(`/article/most-popular`, {params: {count}});
+  async getMostPopularArticles(count) {
+    const articles = await this._load(`/article/most-popular`, {params: {count}});
+
+    return formatMostPopularArticlesToClient(articles);
   }
 
   getArticle(id) {
@@ -51,13 +57,21 @@ class API {
   }
 
   async getLastComments(count) {
-    return this._load(`/article/comments/`, {params: {count}});
+    const comments = await this._load(`/article/comments/`, {params: {count}});
+
+    return formatLastCommentsToClient(comments);
   }
 
   createComment(data, id) {
     return this._load(`/article/${id}/comments`, {
       method: HttpMethod.POST,
       data
+    });
+  }
+
+  deleteComment(articleId, commentId) {
+    return this._load(`/article/${articleId}/comments/${commentId}`, {
+      method: HttpMethod.DELETE,
     });
   }
 
@@ -72,6 +86,12 @@ class API {
     return this._load(`/article/${id}`, {
       method: HttpMethod.PUT,
       data
+    });
+  }
+
+  async deleteArticle(id) {
+    return this._load(`/article/${id}`, {
+      method: HttpMethod.DELETE,
     });
   }
 

@@ -14,10 +14,11 @@ header.header
           if user
             a.header__exit(href='/logout') Выход
           else
-            a.header__enter(href='/login') Вход с паролем
+            a.header__enter(href='/login') Вход
   if (user && !user.isAdmin)
     a.header__avatar.avatar
-      img(src=`img/${user.avatar}` alt='аватар пользователя')
+      if (user.avatar)
+        img(src=`img/${user.avatar}` alt='аватар пользователя')
   else if (user && user.isAdmin)
     button.button.button--colored.header__button-new
       a(href="/articles/add") Новая запись
@@ -30,4 +31,6 @@ header.header
           a(href="/my/comments") Комментарии
         li.navigation__item
           a(href="/categories") Категории
+        li.navigation__item
+          a(href="/search") Поиск
   a.header__search.button.button--search(href='/search' aria-label='поиск по сайту')

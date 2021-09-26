@@ -58,7 +58,12 @@ class ArticleService {
       });
     }
 
-    const articles = await this._Article.findAll({include});
+    const articles = await this._Article.findAll({
+      include,
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+    });
 
     return articles.map((article) => article.get());
   }
@@ -168,8 +173,8 @@ class ArticleService {
     });
   }
 
-  findAllComments() {
-    return this._Comment.findAll({
+  async findAllComments() {
+    return await this._Comment.findAll({
       order: [
         [`createdAt`, `DESC`]
       ],
@@ -180,6 +185,9 @@ class ArticleService {
           attributes: {
             exclude: [`passwordHash`]
           }
+        },
+        {
+          model: this._Article,
         }
       ]
     });

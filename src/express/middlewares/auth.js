@@ -7,8 +7,6 @@ module.exports = (onlyForAdmin) => (req, res, next) => {
     return res.redirect(`/login`);
   }
 
-  console.log('user', user);
-
   if (onlyForAdmin && !user.isAdmin) {
     return res.redirect(`/404`);
   }

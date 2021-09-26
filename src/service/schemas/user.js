@@ -2,7 +2,7 @@
 
 const Joi = require(`joi`);
 
-const namePattern = /[^0-9$&+,:;=?@#|'<>.^*()%!]+/;
+const namePattern = /^[a-zа-яё]+$/i;
 
 module.exports = Joi.object({
   name: Joi.string().min(1).pattern(namePattern).required(),

@@ -106,6 +106,22 @@ const getRandomSubarray = (items) => {
   return result;
 };
 
+const trimString = (string, length, ending) => {
+  const DEFAULT_ENDING = `...`;
+
+  const updatedEnding = ending || DEFAULT_ENDING;
+
+  if (!string) {
+    return ``;
+  }
+
+  if (string.length <= length) {
+    return string;
+  } else {
+    return `${string.slice(0, length)}${updatedEnding}`;
+  }
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
@@ -114,5 +130,6 @@ module.exports = {
   checkTextMatch,
   getUniqueEntitiesArray,
   getExtendedEntitiesArray,
-  getRandomSubarray
+  getRandomSubarray,
+  trimString
 };

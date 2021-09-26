@@ -33,12 +33,12 @@ categoriesRouter.post(`/`, auth(true), asyncHandler(async (req, res) => {
   const {referer} = query;
 
   try {
-    await api.addCategory(body);
+    const newCategory = await api.addCategory(body);
 
     if (referer) {
       res.redirect(`${referer}`);
     } else {
-      renderCategories(req, res);
+      res.redirect(`/articles/category/${newCategory.id}`);
     }
   } catch (err) {
     renderCategories(req, res, {errors: err.response.data.message});
