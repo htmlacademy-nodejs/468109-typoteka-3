@@ -13,7 +13,7 @@ block content
                     form(action='/login' method='post')
                         .form__field
                             label
-                                input(type='email' name='email' placeholder='Электронная почта' required='' value=(user || {}).email || '')
+                                input(type='email' name='email' placeholder='Электронная почта' required='' value=(userData || {}).email || '')
                         .form__field
                             label
                                 input(type='password' name='password' placeholder='Пароль' required='')

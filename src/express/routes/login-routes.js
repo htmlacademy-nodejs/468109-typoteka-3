@@ -20,7 +20,7 @@ loginRouter.post(`/`, async (req, res) => {
       res.redirect(`/`);
     });
   } catch (error) {
-    res.render(`login`, {user: req.body, error: error.response.data});
+    res.render(`login`, {userData: req.body, error: error.response.data});
   }
 });
 
