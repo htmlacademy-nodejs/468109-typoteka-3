@@ -34,8 +34,6 @@ describe(`GET list of articles`, () => {
 
       response = await request(app)
         .get(`/article`);
-
-      console.log(`response`, response.body);
     });
 
     test(`Status code 200`, () => expect(response.statusCode).toBe(StatusCodes.OK));
