@@ -1,20 +1,29 @@
 'use strict';
 
-module.exports.DEFAULT_COMMAND = `--help`;
+const DEFAULT_COMMAND = `--help`;
 
-module.exports.USER_ARGV_INDEX = 2;
+const USER_ARGV_INDEX = 2;
 
-module.exports.ExitCode = {
+const ExitCode = {
   success: 0
 };
 
-module.exports.MAX_ID_LENGTH = 6;
+const MAX_ID_LENGTH = 6;
 
-module.exports.Env = {
+const Env = {
   DEVELOPMENT: `development`,
   PRODUCTION: `production`
 };
 
-module.exports.SystemError = {
+const SystemError = {
   NOT_FOUND: `ENOENT`
+};
+
+module.exports = {
+  DEFAULT_COMMAND,
+  USER_ARGV_INDEX,
+  ExitCode,
+  MAX_ID_LENGTH,
+  Env,
+  SystemError
 };

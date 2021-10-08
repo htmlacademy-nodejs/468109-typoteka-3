@@ -2,7 +2,7 @@
 
 const passwordUtils = require(`../lib/password`);
 
-module.exports.getMockUsers = async () => ([
+const getMockUsers = async () => ([
   {
     name: `Иван`,
     surname: `Иванов`,
@@ -16,3 +16,7 @@ module.exports.getMockUsers = async () => ([
     passwordHash: await passwordUtils.hash(`petrov`),
   }
 ]);
+
+module.exports = {
+  getMockUsers
+};

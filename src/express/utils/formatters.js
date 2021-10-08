@@ -2,7 +2,7 @@
 
 const {trimString} = require(`../../utils`);
 
-module.exports.formatMostPopularArticlesToClient = (articles) => {
+const formatMostPopularArticlesToClient = (articles) => {
   if (!articles) {
     return articles;
   }
@@ -13,7 +13,7 @@ module.exports.formatMostPopularArticlesToClient = (articles) => {
   }));
 };
 
-module.exports.formatLastCommentsToClient = (comments) => {
+const formatLastCommentsToClient = (comments) => {
   if (!comments) {
     return comments;
   }
@@ -22,4 +22,9 @@ module.exports.formatLastCommentsToClient = (comments) => {
     ...comment,
     text: trimString(comment.text, 100)
   }));
+};
+
+module.exports = {
+  formatMostPopularArticlesToClient,
+  formatLastCommentsToClient
 };

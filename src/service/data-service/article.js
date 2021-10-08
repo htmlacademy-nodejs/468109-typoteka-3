@@ -61,7 +61,7 @@ class ArticleService {
     const articles = await this._Article.findAll({
       include,
       order: [
-        [`createdAt`, `DESC`]
+        [`publicationDate`, `DESC`]
       ],
     });
 

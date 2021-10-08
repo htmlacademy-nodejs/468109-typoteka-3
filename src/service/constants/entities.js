@@ -1,7 +1,11 @@
 'use strict';
 
-module.exports.entityNames = {
+const EntityNames = {
   ARTICLE: `article`,
   COMMENT: `comment`,
   CATEGORY: `category`
+};
+
+module.exports = {
+  EntityNames
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.mockArticles = [{
+const mockArticles = [{
   "user": `ivanov@example.com`,
   "title": `Как начать программировать`,
   "publicationDate": 1621239403082,
@@ -89,4 +89,9 @@ module.exports.mockArticles = [{
   }]
 }];
 
-module.exports.mockCategories = [`Программирование`, `Без рамки`, `Железо`, `IT`, `Музыка`, `Разное`, `Кино`, `За жизнь`, `Деревья`];
+const mockCategories = [`Программирование`, `Без рамки`, `Железо`, `IT`, `Музыка`, `Разное`, `Кино`, `За жизнь`, `Деревья`];
+
+module.exports = {
+  mockArticles,
+  mockCategories
+};

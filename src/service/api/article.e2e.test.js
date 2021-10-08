@@ -34,13 +34,15 @@ describe(`GET list of articles`, () => {
 
       response = await request(app)
         .get(`/article`);
+
+      console.log(`response`, response.body);
     });
 
     test(`Status code 200`, () => expect(response.statusCode).toBe(StatusCodes.OK));
 
     test(`Returns a list of 5 articles`, () => expect(response.body.length).toBe(5));
 
-    test(`First articles's title equals ${mockArticles[0].title}`, () => expect(response.body[0].title).toBe(mockArticles[0].title));
+    test(`First articles's title equals ${mockArticles[2].title}`, () => expect(response.body[0].title).toBe(mockArticles[2].title));
   });
 });
 

@@ -4,7 +4,7 @@ const {Router} = require(`express`);
 const {StatusCodes} = require(`http-status-codes`);
 const asyncHandler = require(`express-async-handler`);
 
-const {entityNames} = require(`../constants/entities`);
+const {EntityNames} = require(`../constants/entities`);
 const routeParamsValidator = require(`../middlewares/route-params-validator`);
 const entityValidator = require(`../middlewares/entity-validator`);
 const articleExists = require(`../middlewares/article-exists`);
@@ -31,7 +31,7 @@ module.exports = (app, service) => {
       .json(articles);
   }));
 
-  route.post(`/`, entityValidator(articleSchema, entityNames.ARTICLE), asyncHandler(async (req, res) => {
+  route.post(`/`, entityValidator(articleSchema, EntityNames.ARTICLE), asyncHandler(async (req, res) => {
     const isCreated = await service.create(req.body);
 
     return res.status(StatusCodes.CREATED)
@@ -71,7 +71,7 @@ module.exports = (app, service) => {
       .json(article);
   }));
 
-  route.put(`/:articleId`, [routeParamsValidator, articleExists(service), entityValidator(articleSchema, entityNames.ARTICLE)], asyncHandler(async (req, res) => {
+  route.put(`/:articleId`, [routeParamsValidator, articleExists(service), entityValidator(articleSchema, EntityNames.ARTICLE)], asyncHandler(async (req, res) => {
     const {articleId} = req.params;
 
     const newArticle = await service.update(articleId, req.body);
@@ -98,7 +98,7 @@ module.exports = (app, service) => {
       .json(comments);
   }));
 
-  route.post(`/:articleId/comments/`, [routeParamsValidator, articleExists(service), entityValidator(commentSchema, entityNames.COMMENT)], asyncHandler(async (req, res) => {
+  route.post(`/:articleId/comments/`, [routeParamsValidator, articleExists(service), entityValidator(commentSchema, EntityNames.COMMENT)], asyncHandler(async (req, res) => {
     const {articleId} = req.params;
 
     const newComment = await service.createComment(articleId, req.body);

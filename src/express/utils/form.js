@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.extractCategories = (data) => {
+const extractCategories = (data) => {
   const keys = Object.keys(data);
 
   return keys.reduce((res, item) => {
@@ -10,4 +10,8 @@ module.exports.extractCategories = (data) => {
 
     return res;
   }, []);
+};
+
+module.exports = {
+  extractCategories
 };
