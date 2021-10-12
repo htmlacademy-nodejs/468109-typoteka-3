@@ -16,12 +16,6 @@ class API {
     });
   }
 
-  async _load(url, options) {
-    const response = await this._http.request({url, ...options});
-
-    return response.data;
-  }
-
   getArticles({comments, offset, limit}) {
     return this._load(`/article`, {params: {comments, offset, limit}});
   }
@@ -127,6 +121,12 @@ class API {
       method: HttpMethod.POST,
       data: {email, password}
     });
+  }
+
+  async _load(url, options) {
+    const response = await this._http.request({url, ...options});
+
+    return response.data;
   }
 }
 

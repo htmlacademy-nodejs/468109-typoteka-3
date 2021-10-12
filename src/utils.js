@@ -117,9 +117,9 @@ const trimString = (string, length, ending) => {
 
   if (string.length <= length) {
     return string;
-  } else {
-    return `${string.slice(0, length)}${updatedEnding}`;
   }
+
+  return string.slice(0, length) + updatedEnding;
 };
 
 module.exports = {

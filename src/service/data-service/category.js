@@ -32,9 +32,9 @@ class CategoryService {
       });
 
       return result.map((category) => category.get());
-    } else {
-      return this._Categories.findAll({raw: true});
     }
+
+    return this._Categories.findAll({raw: true});
   }
 
   async findPage({limit, offset}) {
