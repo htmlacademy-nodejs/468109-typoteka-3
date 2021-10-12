@@ -51,11 +51,12 @@ categoriesRouter.post(`/:id`, auth(true), asyncHandler(async (req, res) => {
   const {action} = body;
 
   switch (action) {
-    case HttpMethod.DELETE:
+    case HttpMethod.DELETE: {
       await api.deleteCategory(id);
 
       return res.redirect(`/categories`);
-    case HttpMethod.PUT:
+    }
+    case HttpMethod.PUT: {
       const updatedCategory = {
         name: body.name
       };
@@ -63,8 +64,10 @@ categoriesRouter.post(`/:id`, auth(true), asyncHandler(async (req, res) => {
       await api.updateCategory(id, updatedCategory);
 
       return res.redirect(`/categories`);
-    default:
+    }
+    default: {
       return null;
+    }
   }
 }));
 

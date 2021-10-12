@@ -4,7 +4,6 @@ const {Router} = require(`express`);
 const asyncHandler = require(`express-async-handler`);
 
 const {getAPI} = require(`../api`);
-// const {getExtendedEntitiesArray} = require(`../../utils`);
 const auth = require(`../middlewares/auth`);
 
 const myRouter = new Router();
