@@ -4,7 +4,7 @@ const express = require(`express`);
 const {StatusCodes, ReasonPhrases} = require(`http-status-codes`);
 
 const getSequelize = require(`../lib/sequelize`);
-const getApiRoutes = require(`../api`);
+const getApiRoutes = require(`../api/api`);
 const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;

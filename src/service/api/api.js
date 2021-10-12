@@ -3,7 +3,7 @@
 const {Router} = require(`express`);
 
 const getSequelize = require(`../lib/sequelize`);
-const defineModels = require(`../models`);
+const defineModels = require(`../models/models`);
 const category = require(`./category`);
 const search = require(`./search`);
 const article = require(`./article`);
